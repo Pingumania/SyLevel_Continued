@@ -10,6 +10,7 @@ local bindPatterns = {
 	[ITEM_BIND_ON_EQUIP] = "BoE",
 	[ITEM_BIND_TO_BNETACCOUNT] = "BoA",
 	[ITEM_BNETACCOUNTBOUND] = "BoA",
+	[ITEM_SOULBOUND] = nil
 }
 
 local function CachedGetItemInfo(key)
@@ -51,7 +52,6 @@ local function ScanTip(itemLink, key, slot)
 		scanningTooltip:Show()
 
 		tipCache[itemLink].cached = true
-		tipCache[itemLink].bind = nil
 
 		for i = 2, 4 do
 			local label = _G["SyLevelScanTooltipTextLeft"..i]
