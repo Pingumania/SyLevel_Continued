@@ -12,6 +12,7 @@ local function getIL(loc)
 end
 
 local function pipe(self)
+	if not CharacterFrame:IsShown() then return end
 	local location = self.location
 	local itemLink
 	if (location and location < EQUIPMENTFLYOUT_FIRST_SPECIAL_LOCATION - 1) then
