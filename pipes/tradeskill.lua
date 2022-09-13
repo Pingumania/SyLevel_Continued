@@ -11,12 +11,12 @@ local function update(self)
 	local itemLink = C_TradeSkillUI.GetRecipeItemLink(selectedRecipeID)
 	SyLevel:CallFilters("tradeskill", TradeSkillFrame.DetailsFrame.Contents.ResultIcon, _E and itemLink)
 
-	local numReagents = C_TradeSkillUI.GetRecipeNumReagents(selectedRecipeID)
-	for reagentIndex = 1, numReagents do
-		local reagentFrame = TradeSkillFrame.DetailsFrame.Contents.Reagents[reagentIndex]
-		local reagentLink = C_TradeSkillUI.GetRecipeReagentItemLink(selectedRecipeID, reagentIndex)
-		SyLevel:CallFilters("tradeskill", reagentFrame, _E and reagentLink)
-	end
+	-- local numReagents = C_TradeSkillUI.GetRecipeNumReagents(selectedRecipeID)
+	-- for reagentIndex = 1, numReagents do
+	-- 	local reagentFrame = TradeSkillFrame.DetailsFrame.Contents.Reagents[reagentIndex]
+	-- 	local reagentLink = C_TradeSkillUI.GetRecipeReagentItemLink(selectedRecipeID, reagentIndex)
+	-- 	SyLevel:CallFilters("tradeskill", reagentFrame, _E and reagentLink)
+	-- end
 end
 
 local function doHook()
