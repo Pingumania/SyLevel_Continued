@@ -1,9 +1,11 @@
-## Interface: 90205
-## Title: SyLevel Continued
-## Author: pngmn
+## Interface: 90207
 ## Version: @project-version@
-## SavedVariables: SyLevelDB
+
+## Title: SyLevel Continued
 ## Notes: Displays item level information on your item slots!
+## Author: Pingumania
+
 ## OptionalDeps: tdBag2
+## SavedVariables: SyLevelDB
 
 init.xml
