@@ -102,7 +102,9 @@ do
 			local filter = filterFrame[i]
 			filter:SetChecked(nil)
 			for name in SyLevel.IterateFiltersOnPipe(self.pipe) do
-				filter:SetChecked(filter.name == name)
+				if filter.name == name then
+					filter:SetChecked(true)
+				end
 			end
 		end
 

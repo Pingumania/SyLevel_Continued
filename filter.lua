@@ -45,6 +45,7 @@ function SyLevel:RegisterFilterOnPipe(pipe, filter)
 
 	local filterTable = filtersTable[filter]
 	local display = filterTable[1]
+
 	-- XXX: Clean up this logic.
 	if (not activeFilters[pipe]) then
 		activeFilters[pipe] = {}
@@ -54,7 +55,7 @@ function SyLevel:RegisterFilterOnPipe(pipe, filter)
 		activeFilters[pipe][display] = {}
 		table.insert(activeFilters[pipe][display], filterTable)
 	else
-		local ref = activeFilters[pipe][filterTable[1]]
+		local ref = activeFilters[pipe][display]
 
 		for _, func in next, ref do
 			if (func == filter) then
