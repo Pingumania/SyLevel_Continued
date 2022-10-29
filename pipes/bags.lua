@@ -5,8 +5,7 @@ if (IsAddOnLoaded("LiteBag")) then return end
 if (IsAddOnLoaded("Bagnon")) then return end
 if (IsAddOnLoaded("Inventorian")) then return end
 
-local function update(frame)
-	if (not frame) then return end
+local function UpdateContainer(frame)
 	local id = frame:GetID()
 	local name = frame:GetName()
 	local size = frame.size
@@ -19,12 +18,38 @@ local function update(frame)
 	end
 end
 
+local function UpdateCombinedContainer(frame)
+	for id, button in frame:EnumerateItems() do
+		local bagId = button:GetBagID()
+		local buttonId = button:GetID()
+		local slotLink = GetContainerItemLink(bagId, buttonId)
+		SyLevel:CallFilters("bags", button, _E and slotLink, bagId, buttonId)
+	end
+end
+
+local function Update(frame)
+	if frame.EnumerateItems then
+		UpdateCombinedContainer(frame)
+	else
+		UpdateContainer(frame)
+	end
+end
+
 local function doHook()
 	if (not hook) then
 		hook = function(...)
 			if (_E) then return update(...) end
 		end
-		hooksecurefunc("ContainerFrame_Update", update)
+
+		local id = 1
+		local frame = _G["ContainerFrame"..id]
+		while (frame and frame.Update) do
+			hooksecurefunc(frame, "Update", Update)
+			id = id + 1
+			frame = _G["ContainerFrame"..id]
+		end
+
+		hooksecurefunc(ContainerFrameCombinedBags, "Update", Update)
 	end
 end
 
@@ -37,4 +62,4 @@ local function disable(self)
 	_E = nil
 end
 
-SyLevel:RegisterPipe("bags", enable, disable, update, "Bags", nil)
+SyLevel:RegisterPipe("bags", enable, disable, Update, "Bags", nil)
