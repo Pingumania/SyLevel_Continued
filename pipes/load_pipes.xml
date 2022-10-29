@@ -1,4 +1,4 @@
-<Ui xmlns="http://www.blizzard.com/wow/ui/">
+<Ui>
 	<Script file="adventureguide.lua"/>
 	<Script file="bags.lua"/>
 	<Script file="bank.lua"/>

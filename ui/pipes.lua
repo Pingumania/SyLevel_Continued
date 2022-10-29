@@ -177,6 +177,7 @@ do
 	function frame:refresh()
 		local sChild = self.scrollchild
 		local filterFrame = self.filterFrame
+		if not filterFrame then return end
 
 		-- XXX: Rewrite this to use SyLevel:GetNumFilters()
 		local filters = {}

@@ -1,4 +1,4 @@
-<Ui xmlns="http://www.blizzard.com/wow/ui/">
+<Ui>
 	<Script file="helpers.lua"/>
 	<Script file="pipes.lua"/>
 	<Script file="ilevel.lua"/>
