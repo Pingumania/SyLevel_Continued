@@ -3,20 +3,16 @@ local _E
 
 local function update()
 	if (not LootFrame:IsVisible()) then return end
-	for i = 1, LOOTFRAME_NUMBUTTONS or 4 do
-		local slotFrame = _G["LootButton"..i]
-		local slot = slotFrame.slot
-		local itemLink = slot and GetLootSlotLink(slot)
-		SyLevel:CallFilters("loot", slotFrame, _E and itemLink)
-	end
+	LootFrame.ScrollBox:ForEachFrame(function(frame)
+		local itemLink = GetLootSlotLink(frame:GetSlotIndex())
+		SyLevel:CallFilters("loot", frame.Item.IconBorder, _E and itemLink)
+	end)
 end
 
 local function enable(self)
 	_E = true
 
 	if (not hook) then
-		LootFrameUpButton:HookScript("OnClick", update)
-		LootFrameDownButton:HookScript("OnClick", update)
 		hook = true
 	end
 
