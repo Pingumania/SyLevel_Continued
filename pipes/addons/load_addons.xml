@@ -2,4 +2,5 @@
 	<Script file="litebag.lua"/>
 	<Script file="tdbag2.lua"/>
 	<Script file="bagnon.lua"/>
+	<Script file="inventorian.lua"/>
 </Ui>
