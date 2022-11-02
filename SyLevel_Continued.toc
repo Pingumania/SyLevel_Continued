@@ -5,7 +5,6 @@
 ## Notes: Displays item level information on your item slots!
 ## Author: Pingumania
 
-## OptionalDeps: tdBag2
 ## SavedVariables: SyLevelDB
 
 init.xml
