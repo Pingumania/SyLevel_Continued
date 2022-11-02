@@ -3,9 +3,7 @@ local _E
 if (not IsAddOnLoaded("Bagnon")) then return end
 
 local function update(self)
-	local slotFrame = _G[self:GetName()]
-	local slotLink = self:GetItem()
-	SyLevel:CallFilters("Bagnon", slotFrame, _E and slotLink)
+	SyLevel:CallFilters("Bagnon", self, _E and self:GetItem())
 end
 
 local item = Bagnon.ItemSlot or Bagnon.Item
