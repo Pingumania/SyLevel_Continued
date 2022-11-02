@@ -1,3 +1,9 @@
+SyLevel Continued | 1.5.0
+-------------------------
+- ToC update for 10.0.0
+- Fixed bags for Dragonflight
+- Fixed LootFrame for Dragonflight
+
 SyLevel Continued | 1.4.0
 -------------------------
 - ToC update for 9.2.0
