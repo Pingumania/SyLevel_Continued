@@ -19,6 +19,6 @@ jobs:
           output: RECENT_CHANGES.md
 
       - name: Create Retail Package
-        uses: BigWigsMods/packager@v1
+        uses: BigWigsMods/packager@v2
         env:
           GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
