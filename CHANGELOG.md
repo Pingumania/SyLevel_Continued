@@ -1,3 +1,7 @@
+SyLevel Continued | 1.5.1
+-------------------------
+- Removed tdBag2 from dependancies
+
 SyLevel Continued | 1.5.0
 -------------------------
 - ToC update for 10.0.0
