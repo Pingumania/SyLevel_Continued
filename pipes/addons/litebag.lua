@@ -7,7 +7,7 @@ local function update(button)
     local bag = button:GetParent():GetID()
 	local name = button:GetName()
 	local slotFrame = _G[name]
-	local itemLink = GetContainerItemLink(bag, slot)
+	local itemLink = C_Container.GetContainerItemLink(bag, slot)
 	SyLevel:CallFilters("litebag", slotFrame, _E and itemLink, bag, slot)
 end
 

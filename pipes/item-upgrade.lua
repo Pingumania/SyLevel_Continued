@@ -5,7 +5,7 @@ local function getIL(self)
 	local itemLocation = self:GetItemLocation()
 	if itemLocation:IsBagAndSlot() then
 		local bag, slot = itemLocation:GetBagAndSlot()
-		return GetContainerItemLink(bag, slot)
+		return C_Container.GetContainerItemLink(bag, slot)
 	elseif itemLocation:IsEquipmentSlot() then
 		local slot = itemLocation:GetEquipmentSlot()
 		return GetInventoryItemLink("player", slot)

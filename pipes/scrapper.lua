@@ -7,7 +7,7 @@ local function update()
 		local pending = C_ScrappingMachineUI.GetCurrentPendingScrapItemLocationByIndex(button.SlotNumber)
 		local bag = pending and pending.bagID
 		local slot = pending and pending.slotIndex
-		local itemLink = pending and GetContainerItemLink(bag, slot)
+		local itemLink = pending and C_Container.GetContainerItemLink(bag, slot)
 		SyLevel:CallFilters("scrapper", slotFrame, _E and itemLink)
 	end
 end
