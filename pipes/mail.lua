@@ -48,6 +48,12 @@ local function update()
 	letter()
 end
 
+local function dispatch(self, event, id)
+	if id == Enum.PlayerInteractionType.MailInfo then
+		send()
+	end
+end
+
 local function hookLetter(...)
 	if (_E) then return letter(...) end
 end
@@ -59,7 +65,7 @@ end
 local function enable(self)
 	_E = true
 
-	self:RegisterEvent("MAIL_SHOW", send)
+	self:RegisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_SHOW", dispatch)
 	self:RegisterEvent("MAIL_SEND_INFO_UPDATE", send)
 	self:RegisterEvent("MAIL_SEND_SUCCESS", send)
 
@@ -73,7 +79,7 @@ end
 local function disable(self)
 	_E =  nil
 
-	self:UnregisterEvent("MAIL_SHOW", send)
+	self:UnregisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_SHOW", dispatch)
 	self:UnregisterEvent("MAIL_SEND_INFO_UPDATE", send)
 	self:UnregisterEvent("MAIL_SEND_SUCCESS", send)
 end
