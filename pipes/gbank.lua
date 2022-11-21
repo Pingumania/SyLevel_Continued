@@ -17,10 +17,16 @@ local function update()
 	end
 end
 
+local function dispatch(self, event, id)
+	if id == Enum.PlayerInteractionType.GuildBanker then
+		update()
+	end
+end
+
 local function ADDON_LOADED(self, event, addon)
 	if (addon == "Blizzard_GuildBankUI") then
 		self:RegisterEvent("GUILDBANKBAGSLOTS_CHANGED", update)
-		self:RegisterEvent("GUILDBANKFRAME_OPENED", update)
+		self:RegisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_SHOW", dispatch)
 		self:UnregisterEvent("ADDON_LOADED", ADDON_LOADED)
 	end
 end
@@ -29,7 +35,7 @@ local function enable(self)
 	_E = true
 	if IsAddOnLoaded("Blizzard_GuildBankUI") then
 		self:RegisterEvent("GUILDBANKBAGSLOTS_CHANGED", update)
-		self:RegisterEvent("GUILDBANKFRAME_OPENED", update)
+		self:RegisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_SHOW", dispatch)
 	else
 		self:RegisterEvent("ADDON_LOADED", ADDON_LOADED)
 	end
@@ -38,7 +44,7 @@ end
 local function disable(self)
 	_E = nil
 	self:UnregisterEvent("GUILDBANKBAGSLOTS_CHANGED", update)
-	self:UnregisterEvent("GUILDBANKFRAME_OPENED", update)
+	self:UnregisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_SHOW", dispatch)
 end
 
 SyLevel:RegisterPipe("gbank", enable, disable, update, "Guild Bank Window", nil)

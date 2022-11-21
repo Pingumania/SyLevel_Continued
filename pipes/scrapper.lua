@@ -12,10 +12,16 @@ local function update()
 	end
 end
 
+local function dispatch(self, event, id)
+	if id == Enum.PlayerInteractionType.ScrappingMachine then
+		update()
+	end
+end
+
 local function ADDON_LOADED(self, event, addon)
 	if (addon == "Blizzard_ScrappingMachineUI") then
 		SyLevel:RegisterEvent("SCRAPPING_MACHINE_PENDING_ITEM_CHANGED", update)
-		SyLevel:RegisterEvent("SCRAPPING_MACHINE_CLOSE", update)
+		SyLevel:RegisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_HIDE", dispatch)
 		SyLevel:UnregisterEvent("ADDON_LOADED", ADDON_LOADED)
 	end
 end
@@ -25,7 +31,7 @@ local function enable(self)
 
 	if IsAddOnLoaded("Blizzard_ScrappingMachineUI") then
 		SyLevel:RegisterEvent("SCRAPPING_MACHINE_PENDING_ITEM_CHANGED", update)
-		SyLevel:RegisterEvent("SCRAPPING_MACHINE_CLOSE", update)
+		SyLevel:RegisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_HIDE", dispatch)
 	else
 		SyLevel:RegisterEvent("ADDON_LOADED", ADDON_LOADED)
 	end

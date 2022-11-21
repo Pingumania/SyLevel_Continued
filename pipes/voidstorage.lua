@@ -35,6 +35,12 @@ local function update(self)
 	return updateContents()
 end
 
+local function dispatch(self, event, id)
+	if id == Enum.PlayerInteractionType.VoidStorageBanker then
+		update()
+	end
+end
+
 local function doHook()
 	if (not hook) then
 		hook = function(...)
@@ -53,7 +59,7 @@ local function ADDON_LOADED(self)
 		self:RegisterEvent("VOID_STORAGE_CONTENTS_UPDATE", updateContents)
 		self:RegisterEvent("VOID_STORAGE_DEPOSIT_UPDATE", updateDeposit)
 		self:RegisterEvent("VOID_TRANSFER_DONE", update)
-		self:RegisterEvent("VOID_STORAGE_OPEN", update)
+		self:RegisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_SHOW", dispatch)
 		SyLevel:UnregisterEvent("ADDON_LOADED", ADDON_LOADED)
 	end
 end
@@ -69,7 +75,7 @@ local function enable(self)
 		self:RegisterEvent("VOID_STORAGE_CONTENTS_UPDATE", updateContents)
 		self:RegisterEvent("VOID_STORAGE_DEPOSIT_UPDATE", updateDeposit)
 		self:RegisterEvent("VOID_TRANSFER_DONE", update)
-		self:RegisterEvent("VOID_STORAGE_OPEN", update)
+		self:RegisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_SHOW", dispatch)
 	else
 		self:RegisterEvent("ADDON_LOADED", ADDON_LOADED)
 	end
@@ -83,7 +89,7 @@ local function disable(self)
 	self:UnregisterEvent("VOID_STORAGE_CONTENTS_UPDATE", updateContents)
 	self:UnregisterEvent("VOID_STORAGE_DEPOSIT_UPDATE", updateDeposit)
 	self:UnregisterEvent("VOID_TRANSFER_DONE", update)
-	self:UnregisterEvent("VOID_STORAGE_OPEN", update)
+	self:UnregisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_SHOW", dispatch)
 end
 
 SyLevel:RegisterPipe("voidstore", enable, disable, update, "Void Storage Window", nil)

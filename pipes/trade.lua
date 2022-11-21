@@ -21,6 +21,12 @@ local function update()
 	end
 end
 
+local function dispatch(self, event, id)
+	if id == Enum.PlayerInteractionType.TradePartner then
+		update()
+	end
+end
+
 local function TRADE_PLAYER_ITEM_CHANGED(self, event, index)
 	player(index)
 end
@@ -33,7 +39,7 @@ local function enable(self)
 	_E = true
 
 	self:RegisterEvent("TRADE_UPDATE", update)
-	self:RegisterEvent("TRADE_SHOW", update)
+	self:RegisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_SHOW", dispatch)
 	self:RegisterEvent("TRADE_PLAYER_ITEM_CHANGED", TRADE_PLAYER_ITEM_CHANGED)
 	self:RegisterEvent("TRADE_TARGET_ITEM_CHANGED", TRADE_TARGET_ITEM_CHANGED)
 end
@@ -42,7 +48,7 @@ local function disable(self)
 	_E = nil
 
 	self:UnregisterEvent("TRADE_UPDATE", update)
-	self:UnregisterEvent("TRADE_SHOW", update)
+	self:UnregisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_SHOW", dispatch)
 	self:UnregisterEvent("TRADE_PLAYER_ITEM_CHANGED", player)
 	self:UnregisterEvent("TRADE_TARGET_ITEM_CHANGED", target)
 end

@@ -13,17 +13,23 @@ local function update()
 	end
 end
 
+local function dispatch(self, event, id)
+	if id == Enum.PlayerInteractionType.Banker then
+		update()
+	end
+end
+
 local function enable(self)
 	_E = true
 
-	self:RegisterEvent("BANKFRAME_OPENED", update)
+	self:RegisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_SHOW", dispatch)
 	self:RegisterEvent("PLAYERBANKSLOTS_CHANGED", update)
 end
 
 local function disable(self)
 	_E = nil
 
-	self:UnregisterEvent("BANKFRAME_OPENED", update)
+	self:UnregisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_SHOW", dispatch)
 	self:UnregisterEvent("PLAYERBANKSLOTS_CHANGED", update)
 end
 
