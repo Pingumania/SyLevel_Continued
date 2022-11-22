@@ -5,10 +5,8 @@ if not tdBag2 then return end
 if not tdBag2.RegisterPlugin then return end
 
 local function pipe(item)
-	local name = item:GetName()
-	local slotFrame = _G[name]
-	local itemLink = C_Container.GetContainerItemLink(item.bag, item.slot)
-	SyLevel:CallFilters("tdbag2", slotFrame, _E and itemLink, item.bag, item.slot)
+	local slotFrame = item:GetName()
+	SyLevel:CallFilters("tdbag2", slotFrame, _E and item.bag, item.slot)
 end
 
 local function enable()
