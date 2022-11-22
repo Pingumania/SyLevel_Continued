@@ -5,7 +5,7 @@ if (not IsAddOnLoaded("LiteBag")) then return end
 local function update(button)
 	local slot = button:GetID()
 	local bag = button:GetParent():GetID()
-	local slotFrame = button:GetName()
+	local slotFrame = _G[button:GetName()]
 	SyLevel:CallFilters("litebag", slotFrame, _E and bag, slot)
 end
 
