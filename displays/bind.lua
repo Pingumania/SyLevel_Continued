@@ -19,7 +19,7 @@ local function createText(self)
 end
 
 local function UpdateFont()
-	typeface, size, align, reference, offsetx, offsety, flags = SyLevel:GetFontSettings()
+	typeface, size, align, reference, offsetx, offsety, flags = SyLevel:GetFontSettings("bind")
 end
 
 local function UpdateColorFunc()
@@ -35,7 +35,7 @@ local function textDisplay(frame, value)
 		tc:SetFont(Media:Fetch("font", typeface), size, flags)
 		tc:SetJustifyH("CENTER")
 		tc:SetTextColor(1, 1, 1, 1)
-		tc:SetPoint("TOP", frame, "TOP", offsetx, offsety)
+		tc:SetPoint(align, frame, reference, offsetx, offsety)
 		tc:SetText(value)
 		tc:Show()
 	elseif (frame.SyLevelBindText) then

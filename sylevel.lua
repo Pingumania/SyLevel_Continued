@@ -40,6 +40,15 @@ local defaults = {
 		offsety = 0,
 		flags = "OUTLINE"
 	},
+	FontSettingsBind = {
+		typeface = "Friz Quadrata TT",
+		size = 13,
+		align = "TOP",
+		reference = "TOP",
+		offsetx = 2,
+		offsety = 0,
+		flags = "OUTLINE"
+	},
 	FilterSettings = {
 		ilevel = 1,
 		quality = 2
