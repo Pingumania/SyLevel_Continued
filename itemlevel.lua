@@ -40,8 +40,12 @@ end
 
 local function IsEquipment(hyperlink)
 	local info = CachedGetItemInfoInstant(hyperlink)
-	if info.classID == Enum.ItemClass.Armor or info.classID == Enum.ItemClass.Weapon then
-		return true	
+	if info.classID == Enum.ItemClass.Armor then
+		return true
+	elseif info.classID == Enum.ItemClass.Weapon then
+		return true
+	elseif info.classID == Enum.ItemClass.Gem and info.subClassID == Enum.ItemGemSubclass.Artifactrelic then
+		return true
 	else
 		return false
 	end
