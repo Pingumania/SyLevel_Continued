@@ -1,21 +1,16 @@
 local hook
 local _E
 
-local function getIL(self)
+local function pipe(self)
+	local bag, slot
 	local itemLocation = self:GetItemLocation()
 	if itemLocation:IsBagAndSlot() then
-		local bag, slot = itemLocation:GetBagAndSlot()
-		return C_Container.GetContainerItemLink(bag, slot)
+		bag, slot = itemLocation:GetBagAndSlot()
 	elseif itemLocation:IsEquipmentSlot() then
-		local slot = itemLocation:GetEquipmentSlot()
-		return GetInventoryItemLink("player", slot)
+		slot = itemLocation:GetEquipmentSlot()
 	end
-end
 
-local function pipe(self)
-	local itemLink = getIL(self)
-
-	return SyLevel:CallFilters("item-upgrade", self, _E and itemLink)
+	return SyLevel:CallFilters("item-upgrade", self, _E and bag, slot)
 end
 
 local function update(self)
