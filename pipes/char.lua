@@ -8,10 +8,7 @@ local slots = {
 
 local function update(self, key, slotFrame)
 	if not key then return end
-	local item = Item:CreateFromEquipmentSlot(key)
-	local itemLoc = ItemLocation:CreateFromEquipmentSlot(key)
-	local slotLink = C_Item.DoesItemExist(itemLoc) and item:GetItemLink()
-	SyLevel:CallFilters("char", slotFrame, _E and slotLink, key)
+	SyLevel:CallFilters("char", slotFrame, _E and key)
 end
 
 local function pipe(self, slot)

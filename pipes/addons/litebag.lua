@@ -4,11 +4,9 @@ if (not IsAddOnLoaded("LiteBag")) then return end
 
 local function update(button)
 	local slot = button:GetID()
-    local bag = button:GetParent():GetID()
-	local name = button:GetName()
-	local slotFrame = _G[name]
-	local itemLink = C_Container.GetContainerItemLink(bag, slot)
-	SyLevel:CallFilters("litebag", slotFrame, _E and itemLink, bag, slot)
+	local bag = button:GetParent():GetID()
+	local slotFrame = button:GetName()
+	SyLevel:CallFilters("litebag", slotFrame, _E and bag, slot)
 end
 
 local function enable()

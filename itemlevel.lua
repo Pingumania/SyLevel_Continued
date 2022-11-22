@@ -1,121 +1,136 @@
 local _, ns = ...
 local SyLevel = ns.SyLevel
 
--- Tooltip Scanning stuff
-local scanTooltip = CreateFrame("GameTooltip", "SyLevelScanTooltip", nil, "GameTooltipTemplate")
-local tooltipOwner = CreateFrame("Frame")
-local itemLoc = ItemLocation:CreateEmpty()
-local getItemInfoCache = {}
-local tipCache = {}
+local tipCache, getItemInfoInstantCache, getHyperlinkCache = {}, {}, {}
 local itemLevelPattern = gsub(ITEM_LEVEL, '%%d', '(%%d+).?%%(?(%%d*)%%)?')
 local bindPatterns = {
-	[ITEM_BIND_ON_EQUIP] = "BoE",
-	[ITEM_BIND_TO_BNETACCOUNT] = "BoA",
-	[ITEM_BNETACCOUNTBOUND] = "BoA",
+	[ITEM_BIND_ON_EQUIP] = 2,
+	-- [ITEM_BIND_TO_BNETACCOUNT] = "BoA",
+	-- [ITEM_BNETACCOUNTBOUND] = "BoA",
 }
 
-local function CachedGetItemInfo(key)
-	if not key then return end
-	if not getItemInfoCache[key] then
-		getItemInfoCache[key] = select(2, GetItemInfo(key))
+local function CachedGetItemInfoInstant(hyperlink)
+	if not getItemInfoInstantCache[hyperlink] then
+		local _, itemType, itemSubType, _, _, classID, subClassID = GetItemInfoInstant(hyperlink)
+		getItemInfoInstantCache[hyperlink] = {}
+		getItemInfoInstantCache[hyperlink].itemType = itemType
+		getItemInfoInstantCache[hyperlink].itemSubType = itemSubType
+		getItemInfoInstantCache[hyperlink].classID = classID
+		getItemInfoInstantCache[hyperlink].subClassID = subClassID
 	end
-	return getItemInfoCache[key]
+	return getItemInfoInstantCache[hyperlink]
 end
 
-local function CreateCacheForItem(item)
-	tipCache[item] = {
+local function CachedGetHyperlink(hyperlink)
+	if not getHyperlinkCache[hyperlink] then
+		getHyperlinkCache[hyperlink] = C_TooltipInfo.GetHyperlink(hyperlink)
+	end
+	return getHyperlinkCache[hyperlink]
+end
+
+local function CreateCacheForItem(guid)
+	tipCache[guid] = {
 		ilevel = nil,
-		bound = nil,
+		quality = nil,
+		isBound = nil,
 		bindType = nil,
-		quality = itemLoc:HasAnyLocation() and itemLoc:IsValid() and C_Item.GetItemQuality(itemLoc) or select(3, GetItemInfo(item)),
 		cached = nil
 	}
 end
 
-local function ScanTooltip(item, id, slot)
-	if not item then return end
-	if not tipCache[item].ilevel or tipCache[item].cached == false then
-		scanTooltip:SetOwner(tooltipOwner, "ANCHOR_NONE")
-		scanTooltip:ClearLines()
+local function IsEquipment(hyperlink)
+	local info = CachedGetItemInfoInstant(hyperlink)
+	if info.classID == Enum.ItemClass.Armor or info.classID == Enum.ItemClass.Weapon then
+		return true	
+	else
+		return false
+	end
+end
 
-		if id and id > -1 and slot then
-			scanTooltip.SetBagItem(scanTooltip, id, slot)
-		elseif id then
-			scanTooltip.SetInventoryItem(scanTooltip, "player", (id == -1) and BankButtonIDToInvSlotID(slot) or id)
-		else
-			local itemString = strmatch(item, "|H(.-)|h")
-			scanTooltip.SetHyperlink(scanTooltip, itemString)
+do
+	local itemLoc = ItemLocation:CreateEmpty()
+
+	local function GetHyperlinkItemLevel(hyperlink)
+		local data = CachedGetHyperlink(hyperlink)
+		TooltipUtil.SurfaceArgs(data)
+
+		if hyperlink and not IsEquipment(hyperlink) then return end
+
+		if not tipCache[hyperlink] then
+			CreateCacheForItem(hyperlink)
 		end
-		scanTooltip:Show()
 
-		tipCache[item].cached = true
-		tipCache[item].bindType = nil
-
-		for i = 2, 4 do
-			local label = _G["SyLevelScanTooltipTextLeft"..i]
-			local text = label and label:GetText()
-			if text then
+		local cache = tipCache[hyperlink]
+		if not cache.cached then
+			-- Unfortunately GetDetailedItemLevelInfo returns garbage for max level chars
+			-- cache.ilevel = GetDetailedItemLevelInfo(hyperlink)
+			for _, line in ipairs(data.lines) do
+				TooltipUtil.SurfaceArgs(line)
+				local text = line.leftText
 				local normal, timewalking = strmatch(text, itemLevelPattern)
 				if timewalking and timewalking ~= "" then
-					tipCache[item].ilevel = tonumber(timewalking)
-					tipCache[item].cached = false
+					cache.ilevel = tonumber(timewalking)
+					break
 				elseif normal then
-					tipCache[item].ilevel = tonumber(normal)
-				end
-
-				if text == ITEM_SOULBOUND then
-					tipCache[item].bound = true
-				end
-
-				if not tipCache[item].bound or tipCache[item].bound == false then
-					for pattern, key in pairs(bindPatterns) do
-						if strfind(text, pattern) then
-							tipCache[item].bound = false
-							tipCache[item].bindType = key
-							tipCache[item].cached = false
-						end
-					end
+					cache.ilevel = tonumber(normal)
+					break
 				end
 			end
+			cache.quality = C_Item.GetItemQualityByID(hyperlink)
+			cache.bindType = select(14, GetItemInfo(hyperlink))
+			cache.cached = true
+		end
+
+		return cache.ilevel, cache.quality, cache.bindType
+	end
+
+	local function GetLocationItemLevel(id, slot)
+		itemLoc:Clear()
+		if id >= -1 and slot then
+			itemLoc:SetBagAndSlot(id, slot)
+		elseif id then
+			itemLoc:SetEquipmentSlot(id)
+		end
+		
+		local guid
+		if itemLoc:HasAnyLocation() and itemLoc:IsValid() then
+			guid = C_Item.GetItemGUID(itemLoc)
+		end
+		if not guid then return end
+		
+		local hyperlink = C_Item.GetItemLink(itemLoc)
+		if hyperlink and not IsEquipment(hyperlink) then return end
+
+		if not tipCache[guid] then
+			CreateCacheForItem(guid)
+		end
+
+		local cache = tipCache[guid]
+		if not cache.cached then
+			cache.ilevel = C_Item.GetCurrentItemLevel(itemLoc)
+			cache.quality = C_Item.GetItemQuality(itemLoc)
+			cache.cached = true
 		end
 
 		-- Don't cache Artifact Weapons
-		if tipCache[item].quality == Enum.ItemQuality.Artifact then
-			tipCache[item].cached = false
+		if cache.quality == Enum.ItemQuality.Artifact then
+			cache.cached = nil
 		end
 
-		tipCache[item].ilevel = tipCache[item].ilevel or 1
-		scanTooltip:Hide()
+		-- Don't cache unbound items
+		if not cache.isBound then
+			cache.isBound = C_Item.IsBound(itemLoc)
+			cache.bindType = select(14, GetItemInfo(hyperlink))
+		end
+
+		return cache.ilevel, cache.quality, not cache.isBound and cache.bindType
 	end
 
-	return tipCache[item].ilevel, tipCache[item].quality, tipCache[item].bindType
-end
-
-function SyLevel:GetItemLevel(itemString, id, slot)
-	if type(itemString) ~= "string" then return end
-
-	local itemLink = CachedGetItemInfo(itemString)
-	if not itemLink then return end
-
-	if id and id > -1 and slot then
-		itemLoc:SetBagAndSlot(id, slot)
-	elseif id then
-		itemLoc:SetEquipmentSlot(id)
+	function SyLevel:GetItemLevel(arg1, arg2)
+		if type(arg1) == "string" then
+			return GetHyperlinkItemLevel(arg1)
+		else
+			return GetLocationItemLevel(arg1, arg2)
+		end
 	end
-	
-	local guid
-	if itemLoc:HasAnyLocation() and itemLoc:IsValid() then
-		guid = C_Item.GetItemGUID(itemLoc)
-	end
-	
-	local item = guid and guid..itemLink or itemLink
-	if not item then return end
-
-	if not tipCache[item] then
-		CreateCacheForItem(item)
-	end
-
-	itemLoc:Clear()
-
-	return ScanTooltip(item, id, slot)
 end

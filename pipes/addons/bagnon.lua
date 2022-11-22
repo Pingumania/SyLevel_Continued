@@ -3,7 +3,9 @@ local _E
 if (not IsAddOnLoaded("Bagnon")) then return end
 
 local function update(self)
-	SyLevel:CallFilters("Bagnon", self, _E and self:GetItem())
+	local slot = self:GetID()
+	local bag = self:GetParent():GetID()
+	SyLevel:CallFilters("Bagnon", self, _E and bag, slot)
 end
 
 local item = Bagnon.ItemSlot or Bagnon.Item

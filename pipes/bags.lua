@@ -13,8 +13,7 @@ local function UpdateContainer(frame)
 	for i=1, size do
 		local bid = size - i + 1
 		local slotFrame = _G[name.."Item"..bid]
-		local slotLink = C_Container.GetContainerItemLink(id, i)
-		SyLevel:CallFilters("bags", slotFrame, _E and slotLink, id, i)
+		SyLevel:CallFilters("bags", slotFrame, _E and id, i)
 	end
 end
 
@@ -22,8 +21,7 @@ local function UpdateCombinedContainer(frame)
 	for id, button in frame:EnumerateItems() do
 		local bagId = button:GetBagID()
 		local buttonId = button:GetID()
-		local slotLink = C_Container.GetContainerItemLink(bagId, buttonId)
-		SyLevel:CallFilters("bags", button, _E and slotLink, bagId, buttonId)
+		SyLevel:CallFilters("bags", button, _E and bagId, buttonId)
 	end
 end
 

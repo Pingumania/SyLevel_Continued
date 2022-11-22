@@ -1,9 +1,8 @@
 local _E
 local hook
 
-local function update(item)
-	if (not EncounterJournal:IsVisible() or not item) then return end
-	SyLevel:CallFilters("adventureguide", item.lootFrame.icon, _E and item.link)
+local function update(_, frame)
+	SyLevel:CallFilters("adventureguide", frame.icon, _E and frame.link)
 end
 
 local function doHook()
@@ -11,7 +10,7 @@ local function doHook()
 		hook = function(...)
 			if (_E) then return update(...) end
 		end
-		hooksecurefunc("EncounterJournal_SetLootButton", update)
+		ScrollUtil.AddInitializedFrameCallback(EncounterJournal.encounter.info.LootContainer.ScrollBox, update, nil, false)
 	end
 end
 

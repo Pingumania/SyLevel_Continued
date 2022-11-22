@@ -7,8 +7,7 @@ local function ToIndex(bag, slot) -- copied from inside Inventorian
 end
 
 local function update(self, bag, slot)
-	local itemLink = C_Container.GetContainerItemLink(bag, slot)
-	SyLevel:CallFilters("Inventorian", self.items[ToIndex(bag, slot)], _E and itemLink, bag, slot)
+	SyLevel:CallFilters("Inventorian", self.items[ToIndex(bag, slot)], _E and bag, slot)
 end
 
 local function doHook()
