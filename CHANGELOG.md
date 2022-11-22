@@ -1,3 +1,12 @@
+SyLevel Continued | 2.0.0
+-------------------------
+- ToC update for 10.0.2
+- Fixed Professions for Dragonflight
+- Fixed LootFrame for Dragonflight
+- Fixed AdventureGuide for Dragonflight
+- Use C_Item and C_TooltipInfo instead of tooltip scanning
+- Use new PLAYER_INTERACTION_MANAGER_FRAME_SHOW event
+
 SyLevel Continued | 1.5.1
 -------------------------
 - Removed tdBag2 from dependancies
