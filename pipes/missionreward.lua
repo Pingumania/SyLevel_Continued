@@ -6,7 +6,7 @@ local function update(self, rewards)
 		local index = 1
 		for _, reward in pairs(rewards) do
 			local Reward = self.Rewards[index]
-			local _, itemLink = reward.itemID and GetItemInfo(reward.itemID)
+			local itemLink = reward.itemID and select(2, GetItemInfo(reward.itemID))
 			SyLevel:CallFilters("missionreward", Reward.IconBorder, _E and itemLink)
 			index = index + 1
 		end

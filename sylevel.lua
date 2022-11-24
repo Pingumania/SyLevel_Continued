@@ -81,7 +81,7 @@ local function ADDON_LOADED(self, event, addon)
 				end
 			end
 			--self:UpdateAllPipes()
-		elseif SyLevelDB and SyLevelDB.version ~= _VERSION then
+		elseif SyLevelDB then
 			updateDB(SyLevelDB)
 			SyLevelDB.version = _VERSION
 			SyLevel:SetColorFunc(SyLevelDB.ColorFunc)
@@ -134,7 +134,7 @@ function SyLevel:UpdateAllPipes()
 	SyLevel:CallOptionCallbacks()
 	for pipe, active in SyLevel.IteratePipes() do
 		if (active) then
-			-- SyLevel:UpdatePipe(pipe)
+			SyLevel:UpdatePipe(pipe)
 		end
 	end
 end

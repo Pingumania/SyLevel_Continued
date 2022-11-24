@@ -18,7 +18,7 @@ local function UpdateContainer(frame)
 end
 
 local function UpdateCombinedContainer(frame)
-	for id, button in frame:EnumerateItems() do
+	for _, button in frame:EnumerateItems() do
 		local bagId = button:GetBagID()
 		local buttonId = button:GetID()
 		SyLevel:CallFilters("bags", button, _E and bagId, buttonId)
@@ -36,7 +36,7 @@ end
 local function doHook()
 	if (not hook) then
 		hook = function(...)
-			if (_E) then return update(...) end
+			if (_E) then return Update(...) end
 		end
 
 		local id = 1

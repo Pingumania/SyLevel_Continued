@@ -14,7 +14,7 @@ local DARKBLUE = {0, 0.5, 1}
 local PURPLE = {0.7, 0, 1}
 local PINK = {1, 0, 1}
 local WHITE = {1, 1, 1}
-local HEIRLOOM = {0.9, 0.8, 0.5}
+-- local HEIRLOOM = {0.9, 0.8, 0.5}
 local UnitClass = UnitClass
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 

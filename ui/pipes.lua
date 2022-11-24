@@ -140,7 +140,7 @@ do
 	end
 
 	local function createRow(parent, i)
-		local row = CreateFrame("Button", nil, parent, BackdropTemplateMixin and "BackdropTemplate")
+		local row = CreateFrame("Button", nil, parent, "BackdropTemplate")
 
 		row:SetBackdrop(ns.Backdrop)
 		row:SetBackdropColor(.1, .1, .1, .5)
@@ -297,8 +297,3 @@ do
 end
 
 InterfaceOptions_AddCategory(frame)
-
-SLASH_SyLevel_UI1 = "/SyLevel"
-SlashCmdList[ns.Name.."_UI"] = function()
-	InterfaceOptionsFrame_OpenToCategory(ns.TrivName)
-end

@@ -19,7 +19,7 @@ pollFrame:SetScript("OnUpdate", function(self, elapsed)
 		local unit = InspectFrame.unit
 		if (not unit) then
 			self:Hide()
-			table.wipe(_MISSING)
+			wipe(_MISSING)
 		end
 
 		for i, slotName in next, _MISSING do

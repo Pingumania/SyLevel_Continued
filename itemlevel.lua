@@ -3,11 +3,6 @@ local SyLevel = ns.SyLevel
 
 local tipCache, getItemInfoInstantCache, getHyperlinkCache = {}, {}, {}
 local itemLevelPattern = gsub(ITEM_LEVEL, '%%d', '(%%d+).?%%(?(%%d*)%%)?')
-local bindPatterns = {
-	[ITEM_BIND_ON_EQUIP] = 2,
-	-- [ITEM_BIND_TO_BNETACCOUNT] = "BoA",
-	-- [ITEM_BNETACCOUNTBOUND] = "BoA",
-}
 
 local function CachedGetItemInfoInstant(hyperlink)
 	if not getItemInfoInstantCache[hyperlink] then
@@ -95,13 +90,13 @@ do
 		elseif id then
 			itemLoc:SetEquipmentSlot(id)
 		end
-		
+
 		local guid
 		if itemLoc:HasAnyLocation() and itemLoc:IsValid() then
 			guid = C_Item.GetItemGUID(itemLoc)
 		end
 		if not guid then return end
-		
+
 		local hyperlink = C_Item.GetItemLink(itemLoc)
 		if hyperlink and not IsEquipment(hyperlink) then return end
 

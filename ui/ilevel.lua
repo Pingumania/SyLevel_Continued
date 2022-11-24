@@ -64,7 +64,7 @@ function frame:CreateOptions()
 			UpdateEditbox()
 		end)
 
-		e1:SetScript("OnEnterPressed", function(self)
+		e1:SetScript("OnEnterPressed", function()
 			local value = tonumber(self:GetText())
 			if not value or value < 1 then
 				value = 1
