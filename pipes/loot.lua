@@ -2,7 +2,8 @@ local hook
 local _E
 
 local function update(_, frame)
-	SyLevel:CallFilters("loot", frame.item, _E and frame.link)
+	local link = GetLootSlotLink(frame:GetSlotIndex())
+	SyLevel:CallFilters("loot", frame.Item, _E and link)
 end
 
 local function enable(self)

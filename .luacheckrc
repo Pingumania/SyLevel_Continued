@@ -73,6 +73,7 @@ globals = {
 	"GetInventoryItemTexture",
 	"GetItemInfo",
 	"GetItemInfoInstant",
+	"GetLootSlotLink",
 	"GetMerchantItemLink",
 	"GetNumBuybackItems",
 	"GetNumQuestChoices",
