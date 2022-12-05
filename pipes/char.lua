@@ -13,7 +13,7 @@ end
 
 local function pipe(self, slot)
 	local slotFrame
-	if slot then
+	if slot and slots[slot] then
 		slotFrame = _G["Character"..slots[slot].."Slot"]
 		update(self, slot, slotFrame)
 	else
