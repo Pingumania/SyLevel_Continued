@@ -1,4 +1,5 @@
 if (IsAddOnLoaded("Fizzle")) then return end
+if (IsAddOnLoaded("BetterCharacterPanel")) then return end
 
 local _E
 local slots = {

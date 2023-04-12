@@ -1,3 +1,5 @@
+if (IsAddOnLoaded("BetterCharacterPanel")) then return end
+
 local _E
 local hook
 local slots = {
