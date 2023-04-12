@@ -2,6 +2,7 @@ local _E
 local hook
 
 local function update(_, frame)
+	if not frame then return end
 	SyLevel:CallFilters("adventureguide", frame.icon, _E and frame.link)
 end
 

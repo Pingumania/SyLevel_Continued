@@ -51,6 +51,7 @@ do
 
 	local function GetHyperlinkItemLevel(hyperlink)
 		local data = CachedGetHyperlink(hyperlink)
+		if not data then return end
 		TooltipUtil.SurfaceArgs(data)
 
 		if hyperlink and not IsEquipment(hyperlink) then return end
@@ -126,6 +127,7 @@ do
 	end
 
 	function SyLevel:GetItemLevel(arg1, arg2)
+		if not arg1 then return end
 		if type(arg1) == "string" then
 			return GetHyperlinkItemLevel(arg1)
 		else

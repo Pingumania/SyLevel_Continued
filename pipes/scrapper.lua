@@ -1,7 +1,7 @@
 local _E
 
 local function update()
-	if (not ScrappingMachineFrame:IsVisible()) then return end
+	if not ScrappingMachineFrame then return end
 	for button in pairs(ScrappingMachineFrame.ItemSlots.scrapButtons.activeObjects) do
 		local slotFrame = button.Icon
 		local pending = C_ScrappingMachineUI.GetCurrentPendingScrapItemLocationByIndex(button.SlotNumber)

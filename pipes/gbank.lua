@@ -1,6 +1,7 @@
 local _E
 
 local function update()
+	if (not GuildBankFrame) then return end
 	if (not GuildBankFrame:IsVisible()) then return end
 	local tab = GetCurrentGuildBankTab()
 	for i = 1, MAX_GUILDBANK_SLOTS_PER_TAB or 98 do

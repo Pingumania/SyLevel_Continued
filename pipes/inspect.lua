@@ -38,6 +38,7 @@ pollFrame:SetScript("OnUpdate", function(self, elapsed)
 end)
 
 local function update()
+	if not InspectFrame then return end
 	if (not InspectFrame:IsVisible()) then return end
 
 	local unit = InspectFrame.unit

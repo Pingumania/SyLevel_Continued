@@ -3,6 +3,7 @@ local hook
 if (not IsAddOnLoaded("LiteBag")) then return end
 
 local function update(button)
+	if not button.GetID then return end
 	local slot = button:GetID()
 	local bag = button:GetParent():GetID()
 	local slotFrame = _G[button:GetName()]

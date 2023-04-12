@@ -2,6 +2,7 @@ local hook
 local _E
 
 local function update(_, frame)
+	if not frame then return end
 	local link = GetLootSlotLink(frame:GetSlotIndex())
 	SyLevel:CallFilters("loot", frame.Item, _E and link)
 end
