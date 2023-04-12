@@ -133,3 +133,9 @@ do
 		end
 	end
 end
+
+local EventFrame = CreateFrame("Frame")
+EventFrame:RegisterEvent("ITEM_CHANGED")
+EventFrame:SetScript("OnEvent", function()
+	wipe(tipCache)
+end)
