@@ -1,7 +1,20 @@
 local _E
 local hook
 
-local function update(outputIcon, _, _, _, itemIDOrLink)
+local capturedOutputIcon, capturedTransaction, capturedOutputItemInfo
+
+local function update(outputIcon, transaction, outputItemInfo)
+	if not outputIcon then return end
+	local itemIDOrLink = outputItemInfo.hyperlink
+	if outputItemInfo == capturedOutputItemInfo then
+		local reagents = transaction:CreateCraftingReagentInfoTbl()
+		local recipeSchematic = transaction:GetRecipeSchematic()
+		local info = C_TradeSkillUI.GetRecipeOutputItemData(recipeSchematic.recipeID, reagents, transaction:GetAllocationItemGUID())
+		itemIDOrLink = info.hyperlink
+	end
+	capturedOutputIcon = outputIcon
+	capturedTransaction = transaction
+	capturedOutputItemInfo = outputItemInfo
 	SyLevel:CallFilters("tradeskill", outputIcon, _E and itemIDOrLink)
 end
 
@@ -10,7 +23,10 @@ local function doHook()
 		hook = function(...)
 			if (_E) then return update(...) end
 		end
-		hooksecurefunc(Professions, "SetupOutputIconCommon", hook)
+		hooksecurefunc(Professions, "SetupOutputIcon", hook)
+		EventRegistry:RegisterCallback("Professions.AllocationUpdated", function()
+			update(capturedOutputIcon, capturedTransaction, capturedOutputItemInfo)
+		end)
 	end
 end
 
