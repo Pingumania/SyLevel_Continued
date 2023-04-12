@@ -1,3 +1,12 @@
+SyLevel Continued | 2.1.0
+-------------------------
+- ToC update for 10.0.7
+- Fixed item level not updating after upgrading
+- Fixed profession item level not updating when adding reagents
+- Fixed some nil errors
+- Fixed character flyouts
+- Added support for BetterCharacterPanel
+
 SyLevel Continued | 2.0.0
 -------------------------
 - ToC update for 10.0.2
