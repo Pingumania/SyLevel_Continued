@@ -2,19 +2,18 @@ local hook
 local _E
 
 local function pipe(self)
-	local bag, slot
+	local key, slot
 	local itemLocation = self:GetItemLocation()
 	if itemLocation:IsBagAndSlot() then
-		bag, slot = itemLocation:GetBagAndSlot()
+		key, slot = itemLocation:GetBagAndSlot()
 	elseif itemLocation:IsEquipmentSlot() then
-		slot = itemLocation:GetEquipmentSlot()
+		key = itemLocation:GetEquipmentSlot()
 	end
-
-	return SyLevel:CallFilters("item-upgrade", self, _E and bag, slot)
+	return SyLevel:CallFilters("item-upgrade", self, _E and key, slot)
 end
 
 local function update(self)
-	if not ItemUpgradeFrame:IsShown() then return end
+	if not ItemUpgradeFrame then return end
 	local buttons = EquipmentFlyoutFrame.buttons
 	for _, button in next, buttons do
 		pipe(button)
