@@ -39,7 +39,7 @@ local function IsEquipment(hyperlink)
 		return true
 	elseif info.classID == Enum.ItemClass.Weapon then
 		return true
-	elseif info.classID == Enum.ItemClass.Gem and info.subClassID == Enum.ItemGemSubclass.Artifactrelic then
+	elseif info.classID == Enum.ItemClass.Gem and (info.subClassID == Enum.ItemGemSubclass.Artifactrelic or info.subClassID == Enum.ItemGemSubclass.Other) then
 		return true
 	else
 		return false
