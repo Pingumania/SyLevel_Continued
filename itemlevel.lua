@@ -99,7 +99,7 @@ do
 		if not guid then return end
 
 		local hyperlink = C_Item.GetItemLink(itemLoc)
-		if hyperlink and not IsEquipment(hyperlink) then return end
+		if (hyperlink and not IsEquipment(hyperlink)) or hyperlink == "" then return end
 
 		if not tipCache[guid] then
 			CreateCacheForItem(guid)

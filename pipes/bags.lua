@@ -18,7 +18,7 @@ local function UpdateContainer(frame)
 end
 
 local function UpdateCombinedContainer(frame)
-	for _, button in frame:EnumerateItems() do
+	for _, button in frame:EnumerateValidItems() do
 		local bagId = button:GetBagID()
 		local buttonId = button:GetID()
 		SyLevel:CallFilters("bags", button, _E and bagId, buttonId)
@@ -26,7 +26,7 @@ local function UpdateCombinedContainer(frame)
 end
 
 local function Update(frame)
-	if frame.EnumerateItems then
+	if ContainerFrameSettingsManager:IsUsingCombinedBags() then
 		UpdateCombinedContainer(frame)
 	else
 		UpdateContainer(frame)
@@ -41,13 +41,13 @@ local function doHook()
 
 		local id = 1
 		local frame = _G["ContainerFrame"..id]
-		while (frame and frame.Update) do
-			hooksecurefunc(frame, "Update", Update)
+		while (frame and frame.UpdateItems) do
+			hooksecurefunc(frame, "UpdateItems", Update)
 			id = id + 1
 			frame = _G["ContainerFrame"..id]
 		end
 
-		hooksecurefunc(ContainerFrameCombinedBags, "Update", Update)
+		hooksecurefunc(ContainerFrameCombinedBags, "UpdateItems", Update)
 	end
 end
 
