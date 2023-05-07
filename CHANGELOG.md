@@ -1,7 +1,8 @@
-SyLevel Continued | 2.2.0
--------------------------
+SyLevel Continued | 2.2
+-----------------------
 - ToC update for 10.1.0
 - Fixed Blizzard bags
+- Changed version number format
 
 SyLevel Continued | 2.1.0
 -------------------------
