@@ -52,7 +52,6 @@ do
 	local function GetHyperlinkItemLevel(hyperlink)
 		local data = CachedGetHyperlink(hyperlink)
 		if not data then return end
-		TooltipUtil.SurfaceArgs(data)
 
 		if hyperlink and not IsEquipment(hyperlink) then return end
 
@@ -65,9 +64,7 @@ do
 			-- Unfortunately GetDetailedItemLevelInfo returns garbage for max level chars
 			-- cache.ilevel = GetDetailedItemLevelInfo(hyperlink)
 			for _, line in ipairs(data.lines) do
-				TooltipUtil.SurfaceArgs(line)
-				local text = line.leftText
-				local normal, timewalking = strmatch(text, itemLevelPattern)
+				local normal, timewalking = strmatch(line.leftText, itemLevelPattern)
 				if timewalking and timewalking ~= "" then
 					cache.ilevel = tonumber(timewalking)
 					break
