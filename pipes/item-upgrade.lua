@@ -4,10 +4,12 @@ local _E
 local function pipe(self)
 	local key, slot
 	local itemLocation = self:GetItemLocation()
-	if itemLocation:IsBagAndSlot() then
-		key, slot = itemLocation:GetBagAndSlot()
-	elseif itemLocation:IsEquipmentSlot() then
-		key = itemLocation:GetEquipmentSlot()
+	if itemLocation then
+		if itemLocation:IsBagAndSlot() then
+			key, slot = itemLocation:GetBagAndSlot()
+		elseif itemLocation:IsEquipmentSlot() then
+			key = itemLocation:GetEquipmentSlot()
+		end
 	end
 	return SyLevel:CallFilters("item-upgrade", self, _E and key, slot)
 end
