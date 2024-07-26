@@ -1,3 +1,7 @@
+SyLevel Continued | 2.3
+-----------------------
+- Update for patch 11.0.0
+
 SyLevel Continued | 2.2
 -----------------------
 - ToC update for 10.1.0

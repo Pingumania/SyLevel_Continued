@@ -296,4 +296,10 @@ do
 	end
 end
 
-InterfaceOptions_AddCategory(frame)
+if InterfaceOptions_AddCategory then
+	InterfaceOptions_AddCategory(frame)
+else
+	local category = Settings.RegisterCanvasLayoutCategory(frame, frame.name)
+	Settings.RegisterAddOnCategory(category)
+	ns.parentCategory = category
+end
