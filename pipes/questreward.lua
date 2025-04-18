@@ -5,12 +5,15 @@ local function update()
 	if (not QuestInfoRewardsFrame or not QuestInfoRewardsFrame:IsVisible()) then return end
 
 	for i = 1, MAX_NUM_ITEMS do
-		local questItem = QuestInfo_GetRewardButton(QuestInfoFrame.rewardsFrame, i)
-		local slotFrame = questItem.IconBorder
-		SyLevel:CallFilters("questreward", slotFrame, _E and nil)
+		local questItem = QuestInfoFrame.rewardsFrame.RewardButtons[i]
+		local slotFrame = questItem and questItem.IconBorder
+		if slotFrame then
+			SyLevel:CallFilters("questreward", slotFrame, _E and nil)
+		end
 	end
 
-	local StaticRewards, RewardChoices
+	local StaticRewards
+	local RewardChoices
 	local GetLinkFunction
 	local questID = C_QuestLog.GetSelectedQuest()
 	if QuestInfoFrame.questLog then
@@ -25,22 +28,23 @@ local function update()
 	if StaticRewards + RewardChoices == 0 then
 		return
 	end
-	if not QuestInfo_GetRewardButton(QuestInfoFrame.rewardsFrame, 1) then
-		return
-	end
 
 	for i = 1, StaticRewards do
 		local itemLink = GetLinkFunction("reward", i)
-		local questItem = QuestInfo_GetRewardButton(QuestInfoFrame.rewardsFrame, i)
-		local slotFrame = questItem.IconBorder
-		SyLevel:CallFilters("questreward", slotFrame, _E and itemLink)
+		local questItem = QuestInfoFrame.rewardsFrame.RewardButtons[i]
+		local slotFrame = questItem and questItem.IconBorder
+		if slotFrame then
+			SyLevel:CallFilters("questreward", slotFrame, _E and itemLink)
+		end
 	end
 
 	for i = 1, RewardChoices do
 		local itemLink = GetLinkFunction("choice", i)
-		local questItem = QuestInfo_GetRewardButton(QuestInfoFrame.rewardsFrame, i)
-		local slotFrame = questItem.IconBorder
-		SyLevel:CallFilters("questreward", slotFrame, _E and itemLink)
+		local questItem = QuestInfoFrame.rewardsFrame.RewardButtons[i]
+		local slotFrame = questItem and questItem.IconBorder
+		if slotFrame then
+			SyLevel:CallFilters("questreward", slotFrame, _E and itemLink)
+		end
 	end
 end
 
