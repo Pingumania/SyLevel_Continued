@@ -7,14 +7,14 @@ local function updateContents()
 		local slotFrame = _G["VoidStorageStorageButton" .. slot]
 		local page = _G["VoidStorageFrame"].page
 		local itemID = GetVoidItemInfo(page, slot)
-		local itemLink = itemID and select(2, GetItemInfo(itemID))
+		local itemLink = itemID and select(2, C_Item.GetItemInfo(itemID))
 		SyLevel:CallFilters("voidstore", slotFrame, _E and itemLink)
 	end
 
 	for slot = 1, VOID_WITHDRAW_MAX or 9 do
 		local slotFrame = _G["VoidStorageWithdrawButton"..slot]
 		local itemID = GetVoidTransferWithdrawalInfo(slot)
-		local itemLink = itemID and select(2, GetItemInfo(itemID))
+		local itemLink = itemID and select(2, C_Item.GetItemInfo(itemID))
 		SyLevel:CallFilters("voidstore", slotFrame, _E and itemLink)
 	end
 end
@@ -22,7 +22,7 @@ end
 local function updateDeposit(slot)
 	local slotFrame = _G["VoidStorageDepositButton"..slot]
 	local itemID = GetVoidTransferDepositInfo(slot)
-	local itemLink = itemID and select(2, GetItemInfo(itemID))
+	local itemLink = itemID and select(2, C_Item.GetItemInfo(itemID))
 	SyLevel:CallFilters("voidstore", slotFrame, _E and itemLink)
 end
 
