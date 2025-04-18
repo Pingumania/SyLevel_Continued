@@ -4,23 +4,23 @@ local SyLevel = ns.SyLevel
 local tipCache, getItemInfoInstantCache, getHyperlinkCache = {}, {}, {}
 local itemLevelPattern = gsub(ITEM_LEVEL, '%%d', '(%%d+).?%%(?(%%d*)%%)?')
 
-local function CachedGetItemInfoInstant(hyperlink)
-	if not getItemInfoInstantCache[hyperlink] then
-		local _, itemType, itemSubType, _, _, classID, subClassID = GetItemInfoInstant(hyperlink)
-		getItemInfoInstantCache[hyperlink] = {}
-		getItemInfoInstantCache[hyperlink].itemType = itemType
-		getItemInfoInstantCache[hyperlink].itemSubType = itemSubType
-		getItemInfoInstantCache[hyperlink].classID = classID
-		getItemInfoInstantCache[hyperlink].subClassID = subClassID
+local function CachedGetItemInfoInstant(itemLink)
+	if not getItemInfoInstantCache[itemLink] then
+		local _, itemType, itemSubType, _, _, classID, subClassID = C_Item.GetItemInfoInstant(itemLink)
+		getItemInfoInstantCache[itemLink] = {}
+		getItemInfoInstantCache[itemLink].itemType = itemType
+		getItemInfoInstantCache[itemLink].itemSubType = itemSubType
+		getItemInfoInstantCache[itemLink].classID = classID
+		getItemInfoInstantCache[itemLink].subClassID = subClassID
 	end
-	return getItemInfoInstantCache[hyperlink]
+	return getItemInfoInstantCache[itemLink]
 end
 
-local function CachedGetHyperlink(hyperlink)
-	if not getHyperlinkCache[hyperlink] then
-		getHyperlinkCache[hyperlink] = C_TooltipInfo.GetHyperlink(hyperlink)
+local function CachedGetHyperlink(itemLink)
+	if not getHyperlinkCache[itemLink] then
+		getHyperlinkCache[itemLink] = C_TooltipInfo.GetHyperlink(itemLink)
 	end
-	return getHyperlinkCache[hyperlink]
+	return getHyperlinkCache[itemLink]
 end
 
 local function CreateCacheForItem(guid)
@@ -33,8 +33,8 @@ local function CreateCacheForItem(guid)
 	}
 end
 
-local function IsEquipment(hyperlink)
-	local info = CachedGetItemInfoInstant(hyperlink)
+local function IsEquipment(itemLink)
+	local info = CachedGetItemInfoInstant(itemLink)
 	if info.classID == Enum.ItemClass.Armor then
 		return true
 	elseif info.classID == Enum.ItemClass.Weapon then
@@ -46,23 +46,46 @@ local function IsEquipment(hyperlink)
 	end
 end
 
-do
-	local itemLoc = ItemLocation:CreateEmpty()
+local function IsWarboundUntilEquipped(itemLink)
+	local wue = false
 
-	local function GetHyperlinkItemLevel(hyperlink)
-		local data = CachedGetHyperlink(hyperlink)
+	if C_Item.IsItemBindToAccountUntilEquip(itemLink) then
+		wue = true
+	end
+
+	return wue
+end
+
+local function GetBindType(itemLink)
+	if not itemLink or itemLink == "" or not IsEquipment(itemLink) then
+		return
+	end
+
+	local bindType = select(14, C_Item.GetItemInfo(itemLink))
+	if bindType == 2 and IsWarboundUntilEquipped(itemLink) then
+		bindType = 9
+	end
+
+	return bindType
+end
+
+do
+	local itemLocation = ItemLocation:CreateEmpty()
+
+	local function GetHyperlinkItemLevel(itemLink)
+		local data = CachedGetHyperlink(itemLink)
 		if not data then return end
 
-		if hyperlink and not IsEquipment(hyperlink) then return end
+		if itemLink and not IsEquipment(itemLink) then return end
 
-		if not tipCache[hyperlink] then
-			CreateCacheForItem(hyperlink)
+		if not tipCache[itemLink] then
+			CreateCacheForItem(itemLink)
 		end
 
-		local cache = tipCache[hyperlink]
+		local cache = tipCache[itemLink]
 		if not cache.cached then
-			-- Unfortunately GetDetailedItemLevelInfo returns garbage for max level chars
-			-- cache.ilevel = GetDetailedItemLevelInfo(hyperlink)
+			-- Unfortunately C_Item.GetDetailedItemLevelInfo returns garbage for max level chars
+			-- cache.ilevel = C_Item.GetDetailedItemLevelInfo(hyperlink)
 			for _, line in ipairs(data.lines) do
 				local normal, timewalking = strmatch(line.leftText, itemLevelPattern)
 				if timewalking and timewalking ~= "" then
@@ -73,8 +96,8 @@ do
 					break
 				end
 			end
-			cache.quality = C_Item.GetItemQualityByID(hyperlink)
-			cache.bindType = select(14, GetItemInfo(hyperlink))
+			cache.quality = C_Item.GetItemQualityByID(itemLink)
+			cache.bindType = GetBindType(itemLink)
 			cache.cached = true
 		end
 
@@ -82,30 +105,36 @@ do
 	end
 
 	local function GetLocationItemLevel(id, slot)
-		itemLoc:Clear()
+		itemLocation:Clear()
 		if id >= -1 and slot then
-			itemLoc:SetBagAndSlot(id, slot)
+			itemLocation:SetBagAndSlot(id, slot)
 		elseif id then
-			itemLoc:SetEquipmentSlot(id)
+			itemLocation:SetEquipmentSlot(id)
 		end
 
 		local guid
-		if itemLoc:HasAnyLocation() and itemLoc:IsValid() then
-			guid = C_Item.GetItemGUID(itemLoc)
+		if itemLocation:HasAnyLocation() and itemLocation:IsValid() then
+			guid = C_Item.GetItemGUID(itemLocation)
 		end
 		if not guid then return end
-
-		local hyperlink = C_Item.GetItemLink(itemLoc)
-		if (hyperlink and not IsEquipment(hyperlink)) or hyperlink == "" then return end
 
 		if not tipCache[guid] then
 			CreateCacheForItem(guid)
 		end
 
 		local cache = tipCache[guid]
+
+		local itemLink = C_Item.GetItemLink(itemLocation)
+		if itemLink and not IsEquipment(itemLink) then
+			cache.ilevel = 0
+			cache.quality = nil
+			cache.cached = true
+			return cache.ilevel, cache.quality
+		end
+
 		if not cache.cached then
-			cache.ilevel = C_Item.GetCurrentItemLevel(itemLoc)
-			cache.quality = C_Item.GetItemQuality(itemLoc)
+			cache.ilevel = C_Item.GetCurrentItemLevel(itemLocation)
+			cache.quality = C_Item.GetItemQuality(itemLocation)
 			cache.cached = true
 		end
 
@@ -116,8 +145,8 @@ do
 
 		-- Don't cache unbound items
 		if not cache.isBound then
-			cache.isBound = C_Item.IsBound(itemLoc)
-			cache.bindType = select(14, GetItemInfo(hyperlink))
+			cache.isBound = C_Item.IsBound(itemLocation)
+			cache.bindType = itemLink and GetBindType(itemLink)
 		end
 
 		return cache.ilevel, cache.quality, not cache.isBound and cache.bindType
