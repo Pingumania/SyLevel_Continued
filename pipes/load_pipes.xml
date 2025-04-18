@@ -17,4 +17,5 @@
 	<Script file="trade.lua"/>
 	<Script file="tradeskill.lua"/>
 	<Script file="voidstorage.lua"/>
+	<Script file="warbank.lua"/>
 </Ui>
