@@ -2,7 +2,7 @@ local _E
 
 local function update()
 	if not ScrappingMachineFrame then return end
-	for button in pairs(ScrappingMachineFrame.ItemSlots.scrapButtons.activeObjects) do
+	for button in ScrappingMachineFrame.ItemSlots.scrapButtons:EnumerateActive() do
 		local slotFrame = button.Icon
 		local pending = C_ScrappingMachineUI.GetCurrentPendingScrapItemLocationByIndex(button.SlotNumber)
 		local bag = pending and pending.bagID
@@ -28,7 +28,7 @@ end
 local function enable(self)
 	_E = true
 
-	if IsAddOnLoaded("Blizzard_ScrappingMachineUI") then
+	if C_AddOns.IsAddOnLoaded("Blizzard_ScrappingMachineUI") then
 		SyLevel:RegisterEvent("SCRAPPING_MACHINE_PENDING_ITEM_CHANGED", update)
 		SyLevel:RegisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_HIDE", dispatch)
 	else

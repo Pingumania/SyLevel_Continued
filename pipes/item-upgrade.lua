@@ -30,7 +30,7 @@ local function doHook()
 end
 
 local function ADDON_LOADED(self)
-	if (IsAddOnLoaded("Blizzard_ItemUpgradeUI")) then
+	if (C_AddOns.IsAddOnLoaded("Blizzard_ItemUpgradeUI")) then
 		doHook()
 		SyLevel:UnregisterEvent("ADDON_LOADED", ADDON_LOADED)
 	end
@@ -39,7 +39,7 @@ end
 local function enable(self)
 	_E = true
 
-	if (IsAddOnLoaded("Blizzard_ItemUpgradeUI")) then
+	if (C_AddOns.IsAddOnLoaded("Blizzard_ItemUpgradeUI")) then
 		doHook()
 	else
 		self:RegisterEvent("ADDON_LOADED", ADDON_LOADED)

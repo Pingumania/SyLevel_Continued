@@ -1,4 +1,4 @@
-if (IsAddOnLoaded("BetterCharacterPanel")) then return end
+if (C_AddOns.IsAddOnLoaded("BetterCharacterPanel")) then return end
 
 local _E
 local hook

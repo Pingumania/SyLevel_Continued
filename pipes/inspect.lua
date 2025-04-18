@@ -1,5 +1,5 @@
-if (IsAddOnLoaded("Fizzle")) then return end
-if (IsAddOnLoaded("BetterCharacterPanel")) then return end
+if (C_AddOns.IsAddOnLoaded("Fizzle")) then return end
+if (C_AddOns.IsAddOnLoaded("BetterCharacterPanel")) then return end
 
 local _E
 local slots = {
@@ -74,7 +74,7 @@ end
 local function enable(self)
 	_E = true
 
-	if (IsAddOnLoaded("Blizzard_InspectUI")) then
+	if (C_AddOns.IsAddOnLoaded("Blizzard_InspectUI")) then
 		self:RegisterEvent("PLAYER_TARGET_CHANGED", update)
 		self:RegisterEvent("UNIT_INVENTORY_CHANGED", UNIT_INVENTORY_CHANGED)
 		self:RegisterEvent("INSPECT_READY", update)

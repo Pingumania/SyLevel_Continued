@@ -24,7 +24,7 @@ end
 
 local function enable(self)
 	_E = true
-	if IsAddOnLoaded("Blizzard_EncounterJournal") then
+	if C_AddOns.IsAddOnLoaded("Blizzard_EncounterJournal") then
 		doHook()
 	else
 		SyLevel:RegisterEvent("ADDON_LOADED", ADDON_LOADED)

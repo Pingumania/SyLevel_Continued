@@ -1,8 +1,9 @@
 local _E
 
-if (IsAddOnLoaded("LiteBag")) then return end
-if (IsAddOnLoaded("Bagnon")) then return end
-if (IsAddOnLoaded("Inventorian")) then return end
+if (C_AddOns.IsAddOnLoaded("LiteBag")) then return end
+if (C_AddOns.IsAddOnLoaded("Bagnon")) then return end
+if (C_AddOns.IsAddOnLoaded("Inventorian")) then return end
+if (C_AddOns.IsAddOnLoaded("Baganator")) then return end
 
 local function update()
 	if (not BankFrame:IsVisible()) then return end

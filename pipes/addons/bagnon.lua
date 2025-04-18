@@ -1,6 +1,6 @@
 local hook
 local _E
-if (not IsAddOnLoaded("Bagnon")) then return end
+if (not C_AddOns.IsAddOnLoaded("Bagnon")) then return end
 
 local function update(self)
 	local slot = self:GetID()

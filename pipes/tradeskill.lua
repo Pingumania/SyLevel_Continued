@@ -40,7 +40,7 @@ end
 local function enable(self)
 	_E = true
 
-	if (IsAddOnLoaded("Blizzard_Professions")) then
+	if (C_AddOns.IsAddOnLoaded("Blizzard_Professions")) then
 		doHook()
 	else
 		self:RegisterEvent("ADDON_LOADED", ADDON_LOADED)

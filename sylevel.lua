@@ -1,7 +1,7 @@
 local _, ns = ...
 local SyLevel = ns.SyLevel
 
-local _VERSION = GetAddOnMetadata(ns.Name, "version")
+local _VERSION = C_AddOns.GetAddOnMetadata(ns.Name, "version")
 
 local argcheck = SyLevel.argcheck
 

@@ -34,7 +34,7 @@ end
 
 local function enable(self)
 	_E = true
-	if IsAddOnLoaded("Blizzard_GuildBankUI") then
+	if C_AddOns.IsAddOnLoaded("Blizzard_GuildBankUI") then
 		self:RegisterEvent("GUILDBANKBAGSLOTS_CHANGED", update)
 		self:RegisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_SHOW", dispatch)
 	else

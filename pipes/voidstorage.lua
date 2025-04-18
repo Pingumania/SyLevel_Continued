@@ -51,7 +51,7 @@ local function doHook()
 end
 
 local function ADDON_LOADED(self)
-	if (IsAddOnLoaded("Blizzard_VoidStorageUI")) then
+	if (C_AddOns.IsAddOnLoaded("Blizzard_VoidStorageUI")) then
 		doHook()
 		self:RegisterEvent("VOID_STORAGE_UPDATE", updateContents)
 		self:RegisterEvent("INVENTORY_SEARCH_UPDATE", updateContents)
@@ -67,7 +67,7 @@ end
 local function enable(self)
 	_E = true
 
-	if (IsAddOnLoaded("Blizzard_VoidStorageUI")) then
+	if (C_AddOns.IsAddOnLoaded("Blizzard_VoidStorageUI")) then
 		doHook()
 		self:RegisterEvent("VOID_STORAGE_UPDATE", updateContents)
 		self:RegisterEvent("INVENTORY_SEARCH_UPDATE", updateContents)

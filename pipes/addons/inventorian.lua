@@ -1,6 +1,6 @@
 local hook
 local _E
-if (not IsAddOnLoaded("Inventorian")) then return end
+if (not C_AddOns.IsAddOnLoaded("Inventorian")) then return end
 
 local function ToIndex(bag, slot) -- copied from inside Inventorian
 	return (bag < 0 and bag * 100 - slot) or (bag * 100 + slot)

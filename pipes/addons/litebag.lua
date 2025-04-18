@@ -1,6 +1,6 @@
 local _E
 local hook
-if (not IsAddOnLoaded("LiteBag")) then return end
+if (not C_AddOns.IsAddOnLoaded("LiteBag")) then return end
 
 local function update(button)
 	if not button.GetID then return end

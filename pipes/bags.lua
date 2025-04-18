@@ -1,11 +1,13 @@
 local hook
 local _E
 
-if (IsAddOnLoaded("LiteBag")) then return end
-if (IsAddOnLoaded("Bagnon")) then return end
-if (IsAddOnLoaded("Inventorian")) then return end
+if (C_AddOns.IsAddOnLoaded("LiteBag")) then return end
+if (C_AddOns.IsAddOnLoaded("Bagnon")) then return end
+if (C_AddOns.IsAddOnLoaded("Inventorian")) then return end
+if (C_AddOns.IsAddOnLoaded("Baganator")) then return end
 
 local function UpdateContainer(frame)
+	if not frame.GetID then return end
 	local id = frame:GetID()
 	local name = frame:GetName()
 	local size = frame.size
@@ -18,6 +20,7 @@ local function UpdateContainer(frame)
 end
 
 local function UpdateCombinedContainer(frame)
+	if not frame.EnumerateValidItems then return end
 	for _, button in frame:EnumerateValidItems() do
 		local bagId = button:GetBagID()
 		local buttonId = button:GetID()
