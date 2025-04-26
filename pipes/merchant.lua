@@ -25,8 +25,8 @@ local function enable(self)
 	_E = true
 
 	if (not hook) then
-		hook = function(...)
-			if (_E) then return update(...) end
+		hook = function()
+			if (_E) then return update() end
 		end
 		hooksecurefunc("MerchantFrame_Update", hook)
 	end

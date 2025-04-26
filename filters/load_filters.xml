@@ -1,4 +1,4 @@
 <Ui>
-	<Script file="itemlevel.lua"/>
-	<Script file="bind.lua"/>
+	<Script file="ItemLevel.lua"/>
+	<Script file="Bind.lua"/>
 </Ui>

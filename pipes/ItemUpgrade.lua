@@ -1,3 +1,6 @@
+local _, ns = ...
+if not ns.Retail then return end
+
 local hook
 local _E
 
@@ -11,7 +14,7 @@ local function pipe(self)
 			key = itemLocation:GetEquipmentSlot()
 		end
 	end
-	return SyLevel:CallFilters("item-upgrade", self, _E and key, slot)
+	return SyLevel:CallFilters("itemupgrade", self, _E and key, slot)
 end
 
 local function update(self)
@@ -50,4 +53,4 @@ local function disable(self)
 	_E = nil
 end
 
-SyLevel:RegisterPipe("item-upgrade", enable, disable, update, "Item Upgrade", nil)
+SyLevel:RegisterPipe("itemupgrade", enable, disable, update, "Item Upgrade", nil)

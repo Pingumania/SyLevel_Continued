@@ -151,8 +151,6 @@ function SyLevel:CallOptionCallbacks()
 end
 
 SyLevel:RegisterEvent("ADDON_LOADED", ADDON_LOADED)
-
 SyLevel.argcheck = argcheck
-
 SyLevel.version = _VERSION
 _G.SyLevel = SyLevel

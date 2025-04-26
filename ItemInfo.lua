@@ -1,7 +1,8 @@
 local _, ns = ...
 local SyLevel = ns.SyLevel
 
-local tipCache, getItemInfoInstantCache, getHyperlinkCache = {}, {}, {}
+local scanningTooltip
+local tipCache, getItemInfoInstantCache, getHyperlinkCache, setHyperlinkCache = {}, {}, {}, {}
 local itemLevelPattern = gsub(ITEM_LEVEL, '%%d', '(%%d+).?%%(?(%%d*)%%)?')
 
 local function CachedGetItemInfoInstant(itemLink)
@@ -18,9 +19,40 @@ end
 
 local function CachedGetHyperlink(itemLink)
 	if not getHyperlinkCache[itemLink] then
-		getHyperlinkCache[itemLink] = C_TooltipInfo.GetHyperlink(itemLink)
+		local data = C_TooltipInfo.GetHyperlink(itemLink)
+		getHyperlinkCache[itemLink] = data.lines
 	end
 	return getHyperlinkCache[itemLink]
+end
+
+local function CachedSetHyperlink(itemLink)
+	if not setHyperlinkCache[itemLink] then
+		if not scanningTooltip then
+			scanningTooltip = CreateFrame("GameTooltip", "SyLevelScanTooltip", nil, "GameTooltipTemplate")
+			scanningTooltip:SetOwner(UIParent, "ANCHOR_NONE")
+		end
+
+		scanningTooltip:ClearLines()
+		local rc = pcall(scanningTooltip.SetHyperlink, scanningTooltip, itemLink)
+		if not rc then return nil end
+
+		local lines = {}
+		local lineData = {}
+		for i = 1, 5 do
+			local label = _G["SyLevelScanTooltipTextLeft"..i]
+			if label then
+				local text = label:GetText()
+				if text then
+					lineData.leftText = text
+				end
+			end
+			if next(lineData) then
+				table.insert(lines, lineData)
+			end
+		end
+		setHyperlinkCache[itemLink] = lines
+	end
+	return setHyperlinkCache[itemLink]
 end
 
 local function CreateCacheForItem(guid)
@@ -73,8 +105,8 @@ do
 	local itemLocation = ItemLocation:CreateEmpty()
 
 	local function GetHyperlinkItemLevel(itemLink)
-		local data = CachedGetHyperlink(itemLink)
-		if not data then return end
+		local lines = C_TooltipInfo and CachedGetHyperlink(itemLink) or CachedSetHyperlink(itemLink)
+		if not lines then return end
 
 		if itemLink and not IsEquipment(itemLink) then return end
 
@@ -86,7 +118,7 @@ do
 		if not cache.cached then
 			-- Unfortunately C_Item.GetDetailedItemLevelInfo returns garbage for max level chars
 			-- cache.ilevel = C_Item.GetDetailedItemLevelInfo(hyperlink)
-			for _, line in ipairs(data.lines) do
+			for _, line in ipairs(lines) do
 				local normal, timewalking = strmatch(line.leftText, itemLevelPattern)
 				if timewalking and timewalking ~= "" then
 					cache.ilevel = tonumber(timewalking)
@@ -162,8 +194,10 @@ do
 	end
 end
 
-local EventFrame = CreateFrame("Frame")
-EventFrame:RegisterEvent("ITEM_CHANGED")
-EventFrame:SetScript("OnEvent", function()
-	wipe(tipCache)
-end)
+if ns.Retail then
+	local EventFrame = CreateFrame("Frame")
+	EventFrame:RegisterEvent("ITEM_CHANGED")
+	EventFrame:SetScript("OnEvent", function()
+		wipe(tipCache)
+	end)
+end

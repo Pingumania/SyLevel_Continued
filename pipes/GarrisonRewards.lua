@@ -1,3 +1,6 @@
+local _, ns = ...
+if not ns.Retail then return end
+
 local _E
 local hook
 

@@ -1,9 +1,7 @@
-local _E
+local _, ns = ...
+if not ns.Retail then return end
 
-if (C_AddOns.IsAddOnLoaded("LiteBag")) then return end
-if (C_AddOns.IsAddOnLoaded("Bagnon")) then return end
-if (C_AddOns.IsAddOnLoaded("Inventorian")) then return end
-if (C_AddOns.IsAddOnLoaded("Baganator")) then return end
+local _E
 
 local function update()
 	if (not BankFrame:IsVisible() or not BankFrame.activeTabIndex == 3) then return end

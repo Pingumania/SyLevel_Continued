@@ -1,3 +1,6 @@
+local _, ns = ...
+if not ns.Retail then return end
+
 local _E
 
 local function update()
@@ -41,4 +44,4 @@ local function disable(self)
 	SyLevel:UnregisterEvent("SCRAPPING_MACHINE_PENDING_ITEM_CHANGED", update)
 end
 
-SyLevel:RegisterPipe("scrapper", enable, disable, update, "Scrapper Frame", nil)
+SyLevel:RegisterPipe("scrapper", enable, disable, update, "Scrapping Machine", nil)

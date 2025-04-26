@@ -1,3 +1,6 @@
+local _, ns = ...
+if ns.Classic then return end
+
 local _E
 local hook
 

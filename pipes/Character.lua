@@ -1,15 +1,17 @@
-if (C_AddOns.IsAddOnLoaded("BetterCharacterPanel")) then return end
-
 local _E
 local hook
+local conflictingAddons = {
+	"BetterCharacterPanel"
+}
+
 local slots = {
 	"Head", "Neck", "Shoulder", "Shirt", "Chest", "Waist", "Legs", "Feet", "Wrist",
 	"Hands", "Finger0", "Finger1", "Trinket0", "Trinket1", "Back", "MainHand",
-	"SecondaryHand", [19] = "Tabard",
+	"SecondaryHand", "Ranged", [19] = "Tabard",
 }
 
 local function update(self, key, slotFrame)
-	if not key then return end
+	if not (key or slotFrame) then return end
 	SyLevel:CallFilters("char", slotFrame, _E and key)
 end
 
@@ -50,4 +52,4 @@ local function disable(self)
 	self:UnregisterEvent("PLAYER_EQUIPMENT_CHANGED", PLAYER_EQUIPMENT_CHANGED)
 end
 
-SyLevel:RegisterPipe("char", enable, disable, update, "Character", nil)
+SyLevel:RegisterPipe("char", enable, disable, update, "Character", nil, conflictingAddons)

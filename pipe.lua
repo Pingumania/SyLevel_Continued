@@ -6,17 +6,32 @@ local numPipes = 0
 
 local argcheck = SyLevel.argcheck
 
-function SyLevel:RegisterPipe(pipe, enable, disable, update, name, desc)
+function SyLevel:ShouldSkipPipe(conflictingAddons)
+    for _, addon in ipairs(conflictingAddons) do
+        if C_AddOns.IsAddOnLoaded(addon) then
+            return true
+        end
+    end
+    return false
+end
+
+function SyLevel:RegisterPipe(pipe, enable, disable, update, name, desc, conflictingAddons)
 	argcheck(pipe, 2, "string")
 	argcheck(enable, 3, "function")
 	argcheck(disable, 4, "function", "nil")
 	argcheck(update, 5, "function")
 	argcheck(name, 6, "string", "nil")
 	argcheck(desc, 7, "string", "nil")
+	argcheck(conflictingAddons, 8, "table", "nil")
+
+	if conflictingAddons and SyLevel:ShouldSkipPipe(conflictingAddons) then
+		print(pipe)
+		return nil
+	end
 
 	-- Silently fail.
 	if (pipesTable[pipe]) then
-		return nil, string.format("Pipe [%s] is already registered.")
+		return nil
 	else
 		numPipes = numPipes + 1
 
@@ -26,6 +41,7 @@ function SyLevel:RegisterPipe(pipe, enable, disable, update, name, desc)
 			name = name;
 			update = update;
 			desc = desc;
+			conflictingAddons = conflictingAddons;
 		}
 	end
 	return true

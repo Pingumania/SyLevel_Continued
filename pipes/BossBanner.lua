@@ -1,3 +1,5 @@
+local _, ns = ...
+if not ns.Retail then return end
 
 local _E
 local hook
@@ -6,10 +8,10 @@ local function update(lootframe, data)
 	if not data then return end
 	local itemLink = data.itemLink
 	local slotFrame = lootframe.IconHitBox
-	SyLevel:CallFilters("bossframe", slotFrame, _E and itemLink)
+	SyLevel:CallFilters("bossbanner", slotFrame, _E and itemLink)
 end
 
-local function enable(self)
+local function enable()
 	_E = true
 
 	if (not hook) then
@@ -18,8 +20,8 @@ local function enable(self)
 	end
 end
 
-local function disable(self)
+local function disable()
 	_E = nil
 end
 
-SyLevel:RegisterPipe("bossframe", enable, disable, update, "Boss Frame", nil)
+SyLevel:RegisterPipe("bossbanner", enable, disable, update, "Boss Banner", nil)

@@ -1,9 +1,12 @@
+local _, ns = ...
+if not ns.Retail then return end
+
 local _E
 local hook
 
 local function update(_, frame)
 	if not frame then return end
-	SyLevel:CallFilters("adventureguide", frame.icon, _E and frame.link)
+	SyLevel:CallFilters("encounterjournal", frame.icon, _E and frame.link)
 end
 
 local function doHook()
@@ -35,4 +38,4 @@ local function disable(self)
 	_E = nil
 end
 
-SyLevel:RegisterPipe("adventureguide", enable, disable, update, "AdventureGuide", nil)
+SyLevel:RegisterPipe("encounterjournal", enable, disable, update, "Encounter Journal", nil)

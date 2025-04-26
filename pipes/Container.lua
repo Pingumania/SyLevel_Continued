@@ -1,10 +1,11 @@
 local hook
 local _E
-
-if (C_AddOns.IsAddOnLoaded("LiteBag")) then return end
-if (C_AddOns.IsAddOnLoaded("Bagnon")) then return end
-if (C_AddOns.IsAddOnLoaded("Inventorian")) then return end
-if (C_AddOns.IsAddOnLoaded("Baganator")) then return end
+local conflictingAddons = {
+	"LiteBag",
+	"Bagnon",
+	"Inventorian",
+	"Baganator"
+}
 
 local function UpdateContainer(frame)
 	if not frame.GetID then return end
@@ -29,7 +30,7 @@ local function UpdateCombinedContainer(frame)
 end
 
 local function Update(frame)
-	if ContainerFrameSettingsManager:IsUsingCombinedBags() then
+	if ContainerFrameSettingsManager and ContainerFrameSettingsManager:IsUsingCombinedBags() then
 		UpdateCombinedContainer(frame)
 	else
 		UpdateContainer(frame)
@@ -50,7 +51,11 @@ local function doHook()
 			frame = _G["ContainerFrame"..id]
 		end
 
-		hooksecurefunc(ContainerFrameCombinedBags, "UpdateItems", Update)
+		if ContainerFrameCombinedBags then
+			hooksecurefunc(ContainerFrameCombinedBags, "UpdateItems", Update)
+		else
+			hooksecurefunc("ContainerFrame_Update", Update)
+		end
 	end
 end
 
@@ -63,4 +68,4 @@ local function disable(self)
 	_E = nil
 end
 
-SyLevel:RegisterPipe("bags", enable, disable, Update, "Bags", nil)
+SyLevel:RegisterPipe("bags", enable, disable, Update, "Bags", nil, conflictingAddons)

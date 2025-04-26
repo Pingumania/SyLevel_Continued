@@ -8,4 +8,17 @@
 
 ## SavedVariables: SyLevelDB
 
-init.xml
+Init.lua
+Media.lua
+Event.lua
+Pipe.lua
+Filter.lua
+Display.lua
+Colors.lua
+Fonts.lua
+SyLevel.lua
+ItemInfo.lua
+Ui\Load_Ui.xml
+Pipes\Load_Pipes.xml
+Displays\Load_Displays.xml
+Filters\Load_Filters.xml
