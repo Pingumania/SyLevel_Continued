@@ -25,7 +25,6 @@ function SyLevel:RegisterPipe(pipe, enable, disable, update, name, desc, conflic
 	argcheck(conflictingAddons, 8, "table", "nil")
 
 	if conflictingAddons and SyLevel:ShouldSkipPipe(conflictingAddons) then
-		print(pipe)
 		return nil
 	end
 

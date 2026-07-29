@@ -1,6 +1,8 @@
 local _, ns = ...
 if not ns.Retail then return end
 
+if (C_AddOns.IsAddOnLoaded("Baganator")) then return end
+
 local _E
 
 local function update()
