@@ -10,13 +10,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Clone Project
-        uses: actions/checkout@v2
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
 
       - name: Create Changelog
-        uses: Pingumania/actions-recent-changelog@main
+        uses: Pingumania/actions-recent-changelog@v2
         with:
           input: CHANGELOG.md
-          output: RECENT_CHANGES.md
+          output: CHANGELOG.md
 
       - name: Create Retail Package
         uses: BigWigsMods/packager@v2
