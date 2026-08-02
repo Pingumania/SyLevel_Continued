@@ -39,15 +39,15 @@ local function doHook()
 		local id = 1
 		local frame = _G["ContainerFrame"..id]
 		while (frame and frame.UpdateItems) do
-			hooksecurefunc(frame, "UpdateItems", Update)
+			hooksecurefunc(frame, "UpdateItems", hook)
 			id = id + 1
 			frame = _G["ContainerFrame"..id]
 		end
 
 		if ContainerFrameCombinedBags then
-			hooksecurefunc(ContainerFrameCombinedBags, "UpdateItems", Update)
+			hooksecurefunc(ContainerFrameCombinedBags, "UpdateItems", hook)
 		else
-			hooksecurefunc("ContainerFrame_Update", Update)
+			hooksecurefunc("ContainerFrame_Update", hook)
 		end
 	end
 end
