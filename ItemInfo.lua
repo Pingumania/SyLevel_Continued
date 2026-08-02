@@ -5,24 +5,44 @@ local scanningTooltip
 local tipCache, getItemInfoInstantCache, getHyperlinkCache, setHyperlinkCache = {}, {}, {}, {}
 local itemLevelPattern = gsub(ITEM_LEVEL, '%%d', '(%%d+).?%%(?(%%d*)%%)?')
 
-local function CachedGetItemInfoInstant(itemLink)
-	if not getItemInfoInstantCache[itemLink] then
-		local _, itemType, itemSubType, _, _, classID, subClassID = C_Item.GetItemInfoInstant(itemLink)
-		getItemInfoInstantCache[itemLink] = {}
-		getItemInfoInstantCache[itemLink].itemType = itemType
-		getItemInfoInstantCache[itemLink].itemSubType = itemSubType
-		getItemInfoInstantCache[itemLink].classID = classID
-		getItemInfoInstantCache[itemLink].subClassID = subClassID
+local LINK_CACHE_LIMIT = 500
+local linkCacheCount = 0
+
+local function StoreForLink(cache, itemLink, value)
+	if linkCacheCount >= LINK_CACHE_LIMIT then
+		wipe(getItemInfoInstantCache)
+		wipe(getHyperlinkCache)
+		wipe(setHyperlinkCache)
+		linkCacheCount = 0
 	end
-	return getItemInfoInstantCache[itemLink]
+
+	linkCacheCount = linkCacheCount + 1
+	cache[itemLink] = value
+
+	return value
+end
+
+local function CachedGetItemInfoInstant(itemLink)
+	local cached = getItemInfoInstantCache[itemLink]
+	if not cached then
+		local _, itemType, itemSubType, _, _, classID, subClassID = C_Item.GetItemInfoInstant(itemLink)
+		cached = StoreForLink(getItemInfoInstantCache, itemLink, {
+			itemType = itemType,
+			itemSubType = itemSubType,
+			classID = classID,
+			subClassID = subClassID,
+		})
+	end
+	return cached
 end
 
 local function CachedGetHyperlink(itemLink)
-	if not getHyperlinkCache[itemLink] then
+	local cached = getHyperlinkCache[itemLink]
+	if not cached then
 		local data = C_TooltipInfo.GetHyperlink(itemLink)
-		getHyperlinkCache[itemLink] = data.lines
+		cached = StoreForLink(getHyperlinkCache, itemLink, data.lines)
 	end
-	return getHyperlinkCache[itemLink]
+	return cached
 end
 
 local function CachedSetHyperlink(itemLink)
@@ -50,7 +70,7 @@ local function CachedSetHyperlink(itemLink)
 				table.insert(lines, lineData)
 			end
 		end
-		setHyperlinkCache[itemLink] = lines
+		return StoreForLink(setHyperlinkCache, itemLink, lines)
 	end
 	return setHyperlinkCache[itemLink]
 end
@@ -61,7 +81,8 @@ local function CreateCacheForItem(guid)
 		quality = nil,
 		isBound = nil,
 		bindType = nil,
-		cached = nil
+		cached = nil,
+		itemLink = nil
 	}
 end
 
@@ -130,6 +151,7 @@ do
 			end
 			cache.quality = C_Item.GetItemQualityByID(itemLink)
 			cache.bindType = GetBindType(itemLink)
+			cache.itemLink = itemLink
 			cache.cached = true
 		end
 
@@ -157,6 +179,8 @@ do
 		local cache = tipCache[guid]
 
 		local itemLink = C_Item.GetItemLink(itemLocation)
+		cache.itemLink = itemLink
+
 		if itemLink and not IsEquipment(itemLink) then
 			cache.ilevel = 0
 			cache.quality = nil
@@ -195,9 +219,25 @@ do
 end
 
 if ns.Retail then
+	local function DropCachesForLink(itemLink)
+		if not itemLink then return end
+
+		tipCache[itemLink] = nil
+		getItemInfoInstantCache[itemLink] = nil
+		getHyperlinkCache[itemLink] = nil
+		setHyperlinkCache[itemLink] = nil
+
+		for guid, cache in next, tipCache do
+			if cache.itemLink == itemLink then
+				tipCache[guid] = nil
+			end
+		end
+	end
+
 	local EventFrame = CreateFrame("Frame")
 	EventFrame:RegisterEvent("ITEM_CHANGED")
-	EventFrame:SetScript("OnEvent", function()
-		wipe(tipCache)
+	EventFrame:SetScript("OnEvent", function(_, _, previousHyperlink, newHyperlink)
+		DropCachesForLink(previousHyperlink)
+		DropCachesForLink(newHyperlink)
 	end)
 end

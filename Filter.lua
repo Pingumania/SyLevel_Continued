@@ -75,15 +75,26 @@ end
 
 function SyLevel.IterateFiltersOnPipe(pipe)
 	local t = activeFilters[pipe]
-	return coroutine.wrap(function()
-		if (t) then
-			for _, sub in next, t do
-				for _, v in next, sub do
-					coroutine.yield(v[3], v[1], v[4])
+	local display, filters, index
+
+	return function()
+		while true do
+			if filters then
+				index = index + 1
+				local filter = filters[index]
+				if filter then
+					return filter[3], filter[1], filter[4]
 				end
 			end
+
+			if not t then return end
+
+			display, filters = next(t, display)
+			if not filters then return end
+
+			index = 0
 		end
-	end)
+	end
 end
 
 function SyLevel:UnregisterFilterOnPipe(pipe, filter)

@@ -18,8 +18,11 @@ local function CreateText(self)
 	return tc
 end
 
+local styleVersion = 0
+
 local function UpdateFont()
 	typeface, size, align, reference, offsetx, offsety, flags = SyLevel:GetFontSettings()
+	styleVersion = styleVersion + 1
 end
 
 local function UpdateColorFunc()
@@ -32,10 +35,16 @@ local function TextDisplay(frame, value, quality)
 		local tc = CreateText(frame)
 		if not typeface then UpdateFont() end
 		if not colorFunc then UpdateColorFunc() end
-		tc:SetFont(Media:Fetch("font", typeface), size, flags)
-		tc:SetJustifyH("CENTER")
+
+		if tc.syLevelStyle ~= styleVersion then
+			tc:SetFont(Media:Fetch("font", typeface), size, flags)
+			tc:SetJustifyH("CENTER")
+			tc:ClearAllPoints()
+			tc:SetPoint(align, frame, reference, offsetx, offsety)
+			tc.syLevelStyle = styleVersion
+		end
+
 		tc:SetTextColor(1, 1, 1, 1)
-		tc:SetPoint(align, frame, reference, offsetx, offsety)
 		if quality then
 			tc:SetTextColor(colorFunc(value, quality))
 		end

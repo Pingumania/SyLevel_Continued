@@ -104,14 +104,14 @@ function SyLevel:CallFilters(pipe, frame, ...)
 	local ref = activeFilters[pipe]
 	if (ref) then
 		for display, filters in next, ref do
-			-- TODO: Move this check out of the loop.
-			if (not displaysTable[display]) then return nil, "Display does not exist." end
+			local displayFunc = displaysTable[display]
+			if (not displayFunc) then return nil, "Display does not exist." end
 
 			for i=1,#filters do
 				local func = filters[i][2]
 				-- drop out of the loop if we actually do something nifty on a frame.
 
-				if (displaysTable[display](frame, func(...))) then break end
+				if (displayFunc(frame, func(...))) then break end
 			end
 		end
 	end
