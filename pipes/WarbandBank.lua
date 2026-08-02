@@ -6,7 +6,7 @@ if (C_AddOns.IsAddOnLoaded("Baganator")) then return end
 local _E
 
 local function update()
-	if (not BankFrame:IsVisible() or not BankFrame.activeTabIndex == 3) then return end
+	if (not AccountBankPanel or not BankFrame:IsVisible() or not BankFrame.activeTabIndex == 3) then return end
 	for itemButton in AccountBankPanel:EnumerateValidItems() do
         local slotFrame = itemButton.IconBorder
         SyLevel:CallFilters("warbank", slotFrame, _E and itemButton.bankTabID, itemButton.containerSlotID)
@@ -14,6 +14,8 @@ local function update()
 end
 
 local function updateButton(self, event, ...)
+    if not AccountBankPanel then return end
+
     if event == "BAG_UPDATE" then
         local containerID = ...
 		if AccountBankPanel.selectedTabID == containerID then
@@ -37,9 +39,11 @@ local function enable(self)
 	_E = true
 
     EventUtil.ContinueOnAddOnLoaded("Blizzard_UIPanels_Game", function()
-        hooksecurefunc(AccountBankPanel, "GenerateItemSlotsForSelectedTab", function()
-            update()
-        end)
+        if AccountBankPanel then
+            hooksecurefunc(AccountBankPanel, "GenerateItemSlotsForSelectedTab", function()
+                update()
+            end)
+        end
     end)
 
     self:RegisterEvent("ITEM_LOCK_CHANGED", updateButton)
