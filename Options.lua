@@ -37,8 +37,6 @@ local COLOR_METHODS = {
 -- Pipes and filters
 ------------------------------------------------------------------------
 
--- every row here is a real Huddle setting, so Huddle draws and positions all of it - no
--- hand-anchored frames, which is the only way this page matches the others exactly
 local function PipeKey(pipe)
 	return "PipeEnabled_"..pipe
 end
@@ -61,16 +59,11 @@ for filterName in SyLevel.IterateFilters() do
 end
 table.sort(filterNames)
 
--- reads SyLevelDB directly rather than SyLevel.IterateFiltersOnPipe, which builds a coroutine per
--- call
 local function IsFilterActive(pipe, filterName)
 	local enabled = SyLevelDB.EnabledFilters[filterName]
 	return not not (enabled and enabled[pipe])
 end
 
--- a typed setting needs a flat savedvariable key, but the real state lives in the nested
--- EnabledPipes/EnabledFilters tables SyLevel.lua reads at login. These mirror keys exist only for
--- Huddle to bind to, seeded from the real state here and written back through the option callbacks
 local function SeedKeys()
 	for _, entry in ipairs(pipeNames) do
 		SyLevelDB[PipeKey(entry.pipe)] = SyLevel:IsPipeEnabled(entry.pipe)
@@ -81,9 +74,6 @@ local function SeedKeys()
 	end
 end
 
--- chains onto Event.lua's frame, which SyLevel.lua already registered for ADDON_LOADED early in
--- the toc, so this runs right after SyLevel's own handler has populated EnabledPipes - and well
--- before Huddle's separate listener, which only registers once RegisterSettings is called below
 SyLevel:RegisterEvent("ADDON_LOADED", function(_, _, addon)
 	if addon == "SyLevel_Continued" then
 		SeedKeys()
@@ -176,9 +166,6 @@ local function CreateFontSection(title, dbKey)
 	end
 
 	local function FontField(key, minValue, maxValue)
-		-- Huddle's own defaults handling only refreshes dropdowns automatically (GenerateMenu);
-		-- a slider's own onDefaults has to push the reset value into the widget itself, or the
-		-- slider keeps showing its pre-reset position even though the underlying value changed
 		local slider
 
 		return {
