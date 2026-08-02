@@ -7,8 +7,18 @@ local conflictingAddons = {
 	"Baganator"
 }
 
-local function UpdateContainer(frame)
-	if not frame.GetID then return end
+local function Update(frame)
+	if not frame then return end
+
+	if frame.EnumerateValidItems then
+		for _, button in frame:EnumerateValidItems() do
+			SyLevel:CallFilters("bags", button, _E and button:GetBagID(), button:GetID())
+		end
+
+		return
+	end
+
+	if not (frame.GetID and frame.size) then return end
 	local id = frame:GetID()
 	local name = frame:GetName()
 	local size = frame.size
@@ -17,23 +27,6 @@ local function UpdateContainer(frame)
 		local bid = size - i + 1
 		local slotFrame = _G[name.."Item"..bid]
 		SyLevel:CallFilters("bags", slotFrame, _E and id, i)
-	end
-end
-
-local function UpdateCombinedContainer(frame)
-	if not frame.EnumerateValidItems then return end
-	for _, button in frame:EnumerateValidItems() do
-		local bagId = button:GetBagID()
-		local buttonId = button:GetID()
-		SyLevel:CallFilters("bags", button, _E and bagId, buttonId)
-	end
-end
-
-local function Update(frame)
-	if ContainerFrameSettingsManager and ContainerFrameSettingsManager:IsUsingCombinedBags() then
-		UpdateCombinedContainer(frame)
-	else
-		UpdateContainer(frame)
 	end
 end
 
