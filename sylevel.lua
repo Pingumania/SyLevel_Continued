@@ -56,6 +56,8 @@ local defaults = {
 	ColorFunc = 4
 }
 
+SyLevel.Defaults = defaults
+
 local function updateDB(db)
 	for k,v in pairs(defaults) do
 		if not db[k] then

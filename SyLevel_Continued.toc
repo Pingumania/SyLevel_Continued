@@ -11,6 +11,7 @@
 Libs\LibStub\LibStub.lua
 Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
 Libs\LibSharedMedia-3.0\LibSharedMedia-3.0.lua
+Libs\Huddle\Embed.xml
 
 Init.lua
 Media.lua
@@ -22,7 +23,7 @@ Colors.lua
 Fonts.lua
 SyLevel.lua
 ItemInfo.lua
-Ui\Load_Ui.xml
 Pipes\Load_Pipes.xml
 Displays\Load_Displays.xml
 Filters\Load_Filters.xml
+Options.lua
