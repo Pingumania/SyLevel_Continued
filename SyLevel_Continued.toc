@@ -8,6 +8,10 @@
 
 ## SavedVariables: SyLevelDB
 
+Libs\LibStub\LibStub.lua
+Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
+Libs\LibSharedMedia-3.0\LibSharedMedia-3.0.lua
+
 Init.lua
 Media.lua
 Event.lua
