@@ -93,9 +93,8 @@ function SyLevel:UnregisterFilterOnPipe(pipe, filter)
 	if (not pipesTable[pipe]) then return nil, "Pipe does not exist." end
 	if (not filtersTable[filter]) then return nil, "Filter does not exist." end
 
-	--- XXX: Be more defensive here.
 	local filterTable = filtersTable[filter]
-	local ref = activeFilters[pipe][filterTable[1]]
+	local ref = activeFilters[pipe] and activeFilters[pipe][filterTable[1]]
 	if (ref) then
 		for k, func in next, ref do
 			if (func == filterTable) then
