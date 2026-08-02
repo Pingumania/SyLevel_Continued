@@ -90,7 +90,7 @@ for _, entry in ipairs(pipeNames) do
 		if value then
 			local ok, err = pcall(SyLevel.EnablePipe, SyLevel, pipe)
 			if not ok then
-				print(("SyLevel: failed to enable pipe '%s': %s"):format(pipe, tostring(err)))
+				print(("SyLevel: failed to Enable pipe '%s': %s"):format(pipe, tostring(err)))
 			end
 		else
 			SyLevel:DisablePipe(pipe)
@@ -346,4 +346,3 @@ ns:RegisterSubSettings("Filters", {
 		end,
 	},
 })
-
