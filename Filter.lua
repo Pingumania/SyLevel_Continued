@@ -58,7 +58,7 @@ function SyLevel:RegisterFilterOnPipe(pipe, filter)
 		local ref = activeFilters[pipe][display]
 
 		for _, func in next, ref do
-			if (func == filter) then
+			if (func == filterTable) then
 				return nil, "Filter function is already registered."
 			end
 		end
@@ -107,13 +107,17 @@ function SyLevel:UnregisterFilterOnPipe(pipe, filter)
 	local filterTable = filtersTable[filter]
 	local ref = activeFilters[pipe] and activeFilters[pipe][filterTable[1]]
 	if (ref) then
-		for k, func in next, ref do
-			if (func == filterTable) then
+		for k = #ref, 1, -1 do
+			if (ref[k] == filterTable) then
 				table.remove(ref, k)
-				SyLevelDB.EnabledFilters[filter][pipe] = nil
-				return true
 			end
 		end
+
+		if (SyLevelDB.EnabledFilters[filter]) then
+			SyLevelDB.EnabledFilters[filter][pipe] = nil
+		end
+
+		return true
 	end
 end
 
