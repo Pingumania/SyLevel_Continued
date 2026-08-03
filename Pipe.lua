@@ -90,7 +90,8 @@ end
 function SyLevel:IsPipeEnabled(pipe)
 	argcheck(pipe, 2, "string")
 
-	return pipesTable[pipe].isActive
+	local ref = pipesTable[pipe]
+	return ref and ref.isActive
 end
 
 function SyLevel:UpdatePipe(pipe)
