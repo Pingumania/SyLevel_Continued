@@ -5,11 +5,12 @@ local scanningTooltip
 local tipCache, getItemInfoInstantCache, getHyperlinkCache, setHyperlinkCache = {}, {}, {}, {}
 local itemLevelPattern = gsub(ITEM_LEVEL, '%%d', '(%%d+).?%%(?(%%d*)%%)?')
 
-local LINK_CACHE_LIMIT = 500
+local CACHE_LIMIT = 500
 local linkCacheCount = 0
+local tipCacheCount = 0
 
 local function StoreForLink(cache, itemLink, value)
-	if linkCacheCount >= LINK_CACHE_LIMIT then
+	if linkCacheCount >= CACHE_LIMIT then
 		wipe(getItemInfoInstantCache)
 		wipe(getHyperlinkCache)
 		wipe(setHyperlinkCache)
@@ -72,6 +73,12 @@ local function CachedSetHyperlink(itemLink)
 end
 
 local function CreateCacheForItem(guid)
+	if tipCacheCount >= CACHE_LIMIT then
+		wipe(tipCache)
+		tipCacheCount = 0
+	end
+
+	tipCacheCount = tipCacheCount + 1
 	tipCache[guid] = {
 		ilevel = nil,
 		quality = nil,
@@ -122,10 +129,10 @@ do
 	local itemLocation = ItemLocation:CreateEmpty()
 
 	local function GetHyperlinkItemLevel(itemLink)
+		if itemLink and not IsEquipment(itemLink) then return end
+
 		local lines = C_TooltipInfo and CachedGetHyperlink(itemLink) or CachedSetHyperlink(itemLink)
 		if not lines then return end
-
-		if itemLink and not IsEquipment(itemLink) then return end
 
 		if not tipCache[itemLink] then
 			CreateCacheForItem(itemLink)
