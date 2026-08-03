@@ -66,6 +66,7 @@ function SyLevel:UnregisterEvent(event, func)
 					local _, handler = next(curev)
 					self[event] = handler
 				elseif (n == 0) then
+					self[event] = nil
 					eventFrame:UnregisterEvent(event)
 				end
 
