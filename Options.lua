@@ -384,7 +384,7 @@ ns:RegisterSubSettings("Font Settings", {
 })
 
 ------------------------------------------------------------------------
--- Colors
+-- Item Level Text (colors and thresholds)
 ------------------------------------------------------------------------
 
 local COLOR_PREVIEW_HEIGHT = 64
@@ -448,7 +448,9 @@ local function CreateColorPreview(row)
 	RefreshColorPreview()
 end
 
-ns:RegisterSubSettings("Colors", {
+local ilevelSlider
+
+ns:RegisterSubSettings("Item Level Text", {
 	{
 		type = "preview",
 		height = COLOR_PREVIEW_HEIGHT,
@@ -476,15 +478,6 @@ ns:RegisterSubSettings("Colors", {
 			end)
 		end,
 	},
-})
-
-------------------------------------------------------------------------
--- Filters (item level / quality thresholds)
-------------------------------------------------------------------------
-
-local ilevelSlider
-
-ns:RegisterSubSettings("Filters", {
 	{
 		type = "custom",
 		title = "Item Level Threshold",
