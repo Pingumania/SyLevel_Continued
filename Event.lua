@@ -41,7 +41,7 @@ function SyLevel:RegisterEvent(event, func)
 		if (type(func) == "function") then
 			self[event] = func
 		elseif (not self[event]) then
-			return error("Handler for event [%s] does not exist.", event)
+			return error(("Handler for event [%s] does not exist."):format(event), 3)
 		end
 
 		eventFrame:RegisterEvent(event)
