@@ -148,7 +148,68 @@ for _, entry in ipairs(pipeNames) do
 	})
 end
 
-ns:RegisterSettings("SyLevelDB", pipeSections)
+local BULK_BUTTON_WIDTH = 96
+local BULK_BUTTON_HEIGHT = 22
+local BULK_BUTTON_GAP = 8
+
+local function SetOnAllPipes(GetKey, value)
+	for _, entry in ipairs(pipeNames) do
+		ns:SetOption(GetKey(entry.pipe), value)
+	end
+end
+
+local function CreateBulkButtons(rowFrame, GetKey)
+	local container = CreateFrame("Frame", nil, rowFrame)
+	container:SetSize(BULK_BUTTON_WIDTH * 2 + BULK_BUTTON_GAP, BULK_BUTTON_HEIGHT)
+
+	local enable = CreateFrame("Button", nil, container, "UIPanelButtonTemplate")
+	enable:SetSize(BULK_BUTTON_WIDTH, BULK_BUTTON_HEIGHT)
+	enable:SetPoint("LEFT")
+	enable:SetText("Enable All")
+	enable:SetScript("OnClick", function()
+		SetOnAllPipes(GetKey, true)
+	end)
+
+	local disable = CreateFrame("Button", nil, container, "UIPanelButtonTemplate")
+	disable:SetSize(BULK_BUTTON_WIDTH, BULK_BUTTON_HEIGHT)
+	disable:SetPoint("LEFT", enable, "RIGHT", BULK_BUTTON_GAP, 0)
+	disable:SetText("Disable All")
+	disable:SetScript("OnClick", function()
+		SetOnAllPipes(GetKey, false)
+	end)
+
+	return container
+end
+
+local rootSettings = {
+	{
+		type = "custom",
+		title = "Pipes",
+		tooltip = "Turns every pipe on or off at once.",
+		createControl = function(rowFrame)
+			return CreateBulkButtons(rowFrame, PipeKey)
+		end,
+	},
+}
+
+for _, filterName in ipairs(filterNames) do
+	table.insert(rootSettings, {
+		type = "custom",
+		title = filterName,
+		tooltip = ("Turns %s on or off for every pipe at once."):format(filterName:lower()),
+		createControl = function(rowFrame)
+			return CreateBulkButtons(rowFrame, function(pipe)
+				return FilterKey(pipe, filterName)
+			end)
+		end,
+	})
+end
+
+for _, section in ipairs(pipeSections) do
+	table.insert(rootSettings, section)
+end
+
+ns:RegisterSettings("SyLevelDB", rootSettings)
 ns:RegisterSettingsSlash("/sylevel")
 
 ------------------------------------------------------------------------
