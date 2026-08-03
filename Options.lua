@@ -389,13 +389,80 @@ ns:RegisterSubSettings("Font Settings", {
 -- Colors
 ------------------------------------------------------------------------
 
+local COLOR_PREVIEW_HEIGHT = 64
+local COLOR_PREVIEW_SPACING = 52
+
+local COLOR_SAMPLE_QUALITIES = {
+	Enum.ItemQuality.Poor,
+	Enum.ItemQuality.Common,
+	Enum.ItemQuality.Uncommon,
+	Enum.ItemQuality.Rare,
+	Enum.ItemQuality.Epic,
+	Enum.ItemQuality.Legendary,
+	Enum.ItemQuality.Artifact,
+	Enum.ItemQuality.Heirloom,
+}
+
+local COLOR_SAMPLE_LOW = 0.88
+local COLOR_SAMPLE_HIGH = 1.1
+
+local colorSamples = {}
+
+local function SampleItemLevel(index, count)
+	local _, equipped = GetAverageItemLevel()
+	if not equipped or equipped <= 0 then
+		equipped = SyLevel.MAX_ITEM_LEVEL
+	end
+
+	local low = equipped * COLOR_SAMPLE_LOW
+	local high = equipped * COLOR_SAMPLE_HIGH
+
+	return floor(low + (high - low) * ((index - 1) / (count - 1)) + 0.5)
+end
+
+local function RefreshColorPreview()
+	if #colorSamples == 0 then return end
+
+	local typeface, size, _, _, _, _, flags = SyLevel:GetFontSettings()
+	local ColorFunc = SyLevel:GetColorFunc()
+	local count = #colorSamples
+
+	for index, text in ipairs(colorSamples) do
+		local ilevel = SampleItemLevel(index, count)
+		text:SetFont(SyLevel.media:Fetch("font", typeface), size, flags)
+		text:SetTextColor(ColorFunc(ilevel, COLOR_SAMPLE_QUALITIES[index]))
+		text:SetText(ilevel)
+	end
+end
+
+local function CreateColorPreview(row)
+	local count = #COLOR_SAMPLE_QUALITIES
+
+	for index in ipairs(COLOR_SAMPLE_QUALITIES) do
+		local text = row:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+		text:SetJustifyH("CENTER")
+		text:SetPoint("CENTER", row, "CENTER", (index - (count + 1) / 2) * COLOR_PREVIEW_SPACING, 0)
+
+		colorSamples[index] = text
+	end
+
+	table.insert(previews, RefreshColorPreview)
+	RefreshColorPreview()
+end
+
 ns:RegisterSubSettings("Colors", {
+	{
+		type = "preview",
+		height = COLOR_PREVIEW_HEIGHT,
+		createPreview = CreateColorPreview,
+	},
 	{
 		type = "custom",
 		title = "Coloring Method",
 		tooltip = "Sets the mode of coloring.",
 		onDefaults = function()
 			SyLevel:SetColorFunc(SyLevel.Defaults.ColorFunc)
+			RefreshPreviews()
 		end,
 		createControl = function(rowFrame)
 			local options = {}
@@ -411,6 +478,15 @@ ns:RegisterSubSettings("Colors", {
 			end)
 		end,
 	},
+})
+
+------------------------------------------------------------------------
+-- Filters (item level / quality thresholds)
+------------------------------------------------------------------------
+
+local ilevelSlider
+
+ns:RegisterSubSettings("Filters", {
 	{
 		type = "custom",
 		title = "Item Level Threshold",
