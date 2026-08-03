@@ -66,10 +66,16 @@ end
 
 local function SeedKeys()
 	for _, entry in ipairs(pipeNames) do
-		SyLevelDB[PipeKey(entry.pipe)] = SyLevel:IsPipeEnabled(entry.pipe)
+		local pipeKey = PipeKey(entry.pipe)
+		if SyLevelDB[pipeKey] == nil then
+			SyLevelDB[pipeKey] = SyLevel:IsPipeEnabled(entry.pipe)
+		end
 
 		for _, filterName in ipairs(filterNames) do
-			SyLevelDB[FilterKey(entry.pipe, filterName)] = IsFilterActive(entry.pipe, filterName)
+			local filterKey = FilterKey(entry.pipe, filterName)
+			if SyLevelDB[filterKey] == nil then
+				SyLevelDB[filterKey] = IsFilterActive(entry.pipe, filterName)
+			end
 		end
 	end
 end
@@ -86,6 +92,10 @@ for _, entry in ipairs(pipeNames) do
 	local pipe = entry.pipe
 	local pipeKey = PipeKey(pipe)
 
+	local function RefreshPipe()
+		SyLevel:UpdatePipe(pipe)
+	end
+
 	ns:RegisterOptionCallback(pipeKey, function(value)
 		if value then
 			local ok, err = pcall(SyLevel.EnablePipe, SyLevel, pipe)
@@ -95,6 +105,8 @@ for _, entry in ipairs(pipeNames) do
 		else
 			SyLevel:DisablePipe(pipe)
 		end
+
+		RefreshPipe()
 	end)
 
 	local filterToggles = {}
@@ -108,36 +120,31 @@ for _, entry in ipairs(pipeNames) do
 			else
 				SyLevel:UnregisterFilterOnPipe(pipe, filterName)
 			end
+
+			RefreshPipe()
 		end)
 
 		table.insert(filterToggles, {
 			key = filterKey,
 			type = "toggle",
 			title = filterName,
-			default = false,
+			default = true,
 		})
 	end
-
-	local settings = {
-		{
-			key = pipeKey,
-			type = "toggle",
-			title = "Enabled",
-			default = false,
-		},
-		{
-			type = "toggles",
-			title = "Filters",
-			settings = filterToggles,
-			gatedBy = pipeKey,
-		},
-	}
 
 	table.insert(pipeSections, {
 		type = "section",
 		title = entry.name,
+		key = pipeKey,
+		default = true,
 		expanded = false,
-		settings = settings,
+		columns = 2,
+		settings = {
+			{
+				type = "toggles",
+				settings = filterToggles,
+			},
+		},
 	})
 end
 
