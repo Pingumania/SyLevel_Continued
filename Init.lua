@@ -14,5 +14,5 @@ function ns.SyLevel.argcheck(value, num, ...)
 
 	local types = strjoin(", ", ...)
 	local name = string.match(debugstack(2, 2, 0), ": in function [`<](.-)['>]")
-	error(("Bad argument #%d to '%s' (%s expected, got %s"):format(num, name, types, type(value)), 3)
+	error(("Bad argument #%d to '%s' (%s expected, got %s)"):format(num, name, types, type(value)), 3)
 end
