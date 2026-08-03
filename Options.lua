@@ -216,14 +216,64 @@ ns:RegisterSettingsSlash("/sylevel")
 -- Font Settings
 ------------------------------------------------------------------------
 
+local previews = {}
+
+local function RefreshPreviews()
+	for _, Refresh in ipairs(previews) do
+		Refresh()
+	end
+end
+
+local PREVIEW_HEIGHT = 84
+local PREVIEW_ICON_SIZE = 37
+local PREVIEW_ICON = "Interface\\Icons\\INV_Sword_04"
+local PREVIEW_ILEVEL = 415
+local PREVIEW_QUALITY = Enum.ItemQuality.Epic
+local PREVIEW_BIND = "BoE"
+
 -- dbKey: "FontSettings" or "FontSettingsBind"
 local function CreateFontSection(title, dbKey)
+	local isBind = dbKey == "FontSettingsBind"
+	local previewIcon, previewText
+
 	local function GetDB()
 		return SyLevelDB[dbKey]
 	end
 
+	local function RefreshPreview()
+		if not previewText then return end
+
+		local typeface, size, align, reference, offsetx, offsety, flags = SyLevel:GetFontSettings(isBind)
+
+		previewText:SetFont(SyLevel.media:Fetch("font", typeface), size, flags)
+		previewText:SetJustifyH("CENTER")
+		previewText:ClearAllPoints()
+		previewText:SetPoint(align, previewIcon, reference, offsetx, offsety)
+
+		if isBind then
+			previewText:SetTextColor(1, 1, 1, 1)
+			previewText:SetText(PREVIEW_BIND)
+		else
+			previewText:SetTextColor(SyLevel:GetColorFunc()(PREVIEW_ILEVEL, PREVIEW_QUALITY))
+			previewText:SetText(PREVIEW_ILEVEL)
+		end
+	end
+
+	local function CreatePreview(row)
+		previewIcon = row:CreateTexture(nil, "ARTWORK")
+		previewIcon:SetSize(PREVIEW_ICON_SIZE, PREVIEW_ICON_SIZE)
+		previewIcon:SetPoint("CENTER")
+		previewIcon:SetTexture(PREVIEW_ICON)
+
+		previewText = row:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+
+		table.insert(previews, RefreshPreview)
+		RefreshPreview()
+	end
+
 	local function ApplyFont()
 		SyLevel:SetFontSettings()
+		RefreshPreviews()
 	end
 
 	local function ResetField(field)
@@ -264,6 +314,11 @@ local function CreateFontSection(title, dbKey)
 		title = title,
 		expanded = true,
 		settings = {
+			{
+				type = "preview",
+				height = PREVIEW_HEIGHT,
+				createPreview = CreatePreview,
+			},
 			{
 				type = "custom",
 				title = "Typeface",
@@ -352,18 +407,10 @@ ns:RegisterSubSettings("Colors", {
 				return SyLevelDB.ColorFunc
 			end, function(value)
 				SyLevel:SetColorFunc(value)
+				RefreshPreviews()
 			end)
 		end,
 	},
-})
-
-------------------------------------------------------------------------
--- Filters (item level / quality thresholds)
-------------------------------------------------------------------------
-
-local ilevelSlider
-
-ns:RegisterSubSettings("Filters", {
 	{
 		type = "custom",
 		title = "Item Level Threshold",
