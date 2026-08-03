@@ -102,17 +102,23 @@ function SyLevel:CallFilters(pipe, frame, ...)
 	argcheck(pipe, 2, "string")
 	if (not pipesTable[pipe]) then return nil, "Pipe does not exist." end
 	local ref = activeFilters[pipe]
-	if (ref) then
-		for display, filters in next, ref do
-			local displayFunc = displaysTable[display]
-			if (not displayFunc) then return nil, "Display does not exist." end
 
+	for display, displayFunc in next, displaysTable do
+		local filters = ref and ref[display]
+		local ran = false
+
+		if (filters) then
 			for i=1,#filters do
 				local func = filters[i][2]
+				ran = true
 				-- drop out of the loop if we actually do something nifty on a frame.
 
 				if (displayFunc(frame, func(...))) then break end
 			end
+		end
+
+		if (not ran) then
+			displayFunc(frame, nil)
 		end
 	end
 end
