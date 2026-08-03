@@ -52,4 +52,4 @@ local function Disable(self)
 	self:UnregisterEvent("PLAYER_EQUIPMENT_CHANGED", PLAYER_EQUIPMENT_CHANGED)
 end
 
-SyLevel:RegisterPipe("char", Enable, Disable, Update, "Character", nil, conflictingAddons)
+SyLevel:RegisterPipe("char", Enable, Disable, Pipe, "Character", nil, conflictingAddons)

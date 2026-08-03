@@ -7,8 +7,26 @@ local conflictingAddons = {
 	"Baganator"
 }
 
-local function Update(frame)
-	if not frame then return end
+local Update
+
+local function UpdateAll()
+	local id = 1
+	local frame = _G["ContainerFrame"..id]
+	while (frame) do
+		if frame:IsShown() then
+			Update(frame)
+		end
+		id = id + 1
+		frame = _G["ContainerFrame"..id]
+	end
+
+	if ContainerFrameCombinedBags and ContainerFrameCombinedBags:IsShown() then
+		Update(ContainerFrameCombinedBags)
+	end
+end
+
+function Update(frame)
+	if not frame then return UpdateAll() end
 
 	if frame.EnumerateValidItems then
 		for _, button in frame:EnumerateValidItems() do

@@ -4,6 +4,10 @@ local hook
 local capturedOutputIcon, capturedTransaction, capturedOutputItemInfo
 
 local function Update(outputIcon, transaction, outputItemInfo)
+	outputIcon = outputIcon or capturedOutputIcon
+	transaction = transaction or capturedTransaction
+	outputItemInfo = outputItemInfo or capturedOutputItemInfo
+
 	if not outputIcon then return end
 	if not transaction then return end
 	if not outputItemInfo then return end

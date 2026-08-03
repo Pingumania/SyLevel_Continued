@@ -98,7 +98,7 @@ function SyLevel:UpdatePipe(pipe)
 
 	local ref = pipesTable[pipe]
 	if (ref) then
-		ref.Update(self)
+		ref.Update()
 
 		return true
 	end
