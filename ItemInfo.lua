@@ -57,17 +57,11 @@ local function CachedSetHyperlink(itemLink)
 		if not rc then return nil end
 
 		local lines = {}
-		local lineData = {}
 		for i = 1, 5 do
 			local label = _G["SyLevelScanTooltipTextLeft"..i]
-			if label then
-				local text = label:GetText()
-				if text then
-					lineData.leftText = text
-				end
-			end
-			if next(lineData) then
-				table.insert(lines, lineData)
+			local text = label and label:GetText()
+			if text then
+				table.insert(lines, {leftText = text})
 			end
 		end
 		return StoreForLink(setHyperlinkCache, itemLink, lines)
