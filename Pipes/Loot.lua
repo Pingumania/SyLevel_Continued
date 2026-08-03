@@ -12,9 +12,8 @@ local function Enable(self)
 
 	if (not hook) then
 		hook = true
+		ScrollUtil.AddInitializedFrameCallback(LootFrame.ScrollBox, Update, nil, false)
 	end
-
-	ScrollUtil.AddInitializedFrameCallback(LootFrame.ScrollBox, Update, nil, false)
 end
 
 local function Disable(self)
