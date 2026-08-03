@@ -37,7 +37,7 @@ local function DoHook()
 		hook = function(...)
 			if (_E) then return Pipe(...) end
 		end
-		CharacterFrame:HookScript("OnShow", Pipe)
+		CharacterFrame:HookScript("OnShow", hook)
 	end
 end
 
