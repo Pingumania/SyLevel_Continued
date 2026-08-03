@@ -27,8 +27,6 @@ local COLOR_METHODS = {
 	"Low Red, Yellow, Green High",
 	"Predefined Colors",
 	"Current Item Level Comparison",
-	"Low Green, Yellow, Red High > 450",
-	"Red Green, Yellow, Green High > 450",
 	"Class Coloring",
 	"Quality Coloring",
 }

@@ -53,10 +53,25 @@ local defaults = {
 		ilevel = 1,
 		quality = 2
 	},
-	ColorFunc = 4
+	ColorFunc = 4,
+	ColorFuncVersion = 2
 }
 
 SyLevel.Defaults = defaults
+
+local COLORFUNC_REMAP = {
+	[5] = 1,
+	[6] = 2,
+	[7] = 5,
+	[8] = 6
+}
+
+local function MigrateColorFunc(db)
+	if (db.ColorFuncVersion == defaults.ColorFuncVersion) then return end
+
+	db.ColorFunc = COLORFUNC_REMAP[db.ColorFunc] or db.ColorFunc
+	db.ColorFuncVersion = defaults.ColorFuncVersion
+end
 
 local function UpdateDB(db)
 	for k,v in pairs(defaults) do
@@ -84,6 +99,7 @@ local function ADDON_LOADED(self, event, addon)
 			end
 			--self:UpdateAllPipes()
 		elseif SyLevelDB then
+			MigrateColorFunc(SyLevelDB)
 			UpdateDB(SyLevelDB)
 			SyLevelDB.version = _VERSION
 			SyLevel:SetColorFunc(SyLevelDB.ColorFunc)

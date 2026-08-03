@@ -40,22 +40,6 @@ local colors = {
 	{0.55, 0.55, 0.55}, -- 13
 }
 
-local ilvls = {
-	395, -- 1
-	380, -- 2
-	365, -- 3
-	350, -- 4
-	335, -- 5
-	320, -- 6
-	305, -- 7
-	250, -- 8
-	200, -- 9
-	150, -- 10
-	100, -- 11
-	50, -- 12
-	1 -- 13
-}
-
 local function BuildRelative(e)
 	local t = {}
 	local start = (e / 12)
@@ -70,6 +54,31 @@ local function BuildRelative(e)
 	end
 	t[13] = 1 -- Always make level 1 items grey.
 	return t
+end
+
+local relative
+
+local function UpdateRelative()
+	local _, equipped = GetAverageItemLevel()
+	if (not equipped or equipped <= 0) then
+		equipped = MAX_ITEM_LEVEL
+	end
+
+	relative = BuildRelative(equipped)
+	return relative
+end
+
+local function GetRelative()
+	return relative or UpdateRelative()
+end
+
+local function RelativePosition(ilvl)
+	local t = GetRelative()
+	local low, high = t[12], t[1]
+
+	if (high <= low) then return 1 end
+
+	return max(0, min(1, (ilvl - low) / (high - low)))
 end
 
 local CS = CreateFrame("ColorSelect")
@@ -115,29 +124,29 @@ end
 local colorFunctions = {
 	[1] = function(ilvl)
 		argcheck(ilvl, 2, "number")
-		ilvl = (ilvl / MAX_ITEM_LEVEL)
+		local perc = RelativePosition(ilvl)
 		local r, g, b
-		if ilvl < .5 then
-			r = ilvl*2
+		if perc < .5 then
+			r = perc*2
 			g = 1
 			b = 0
 		else
 			r = 1
-			g = 1-(ilvl-0.5)*2
+			g = 1-(perc-0.5)*2
 			b = 0
 		end
 		return r, g, b
 	end,
 	[2] = function(ilvl)
 		argcheck(ilvl, 2, "number")
-		ilvl = (ilvl / MAX_ITEM_LEVEL)
+		local perc = RelativePosition(ilvl)
 		local r, g, b
-		if ilvl < .5 then
+		if perc < .5 then
 			r = 1
-			g = ilvl*2
+			g = perc*2
 			b = 0
 		else
-			r = 1-(ilvl-0.5)*2
+			r = 1-(perc-0.5)*2
 			g = 1
 			b = 0
 		end
@@ -145,66 +154,23 @@ local colorFunctions = {
 	end,
 	[3] = function(ilvl)
 		argcheck(ilvl, 2, "number")
-		for i=1,#ilvls do
-			if ilvl >= ilvls[i] then
+		local t = GetRelative()
+		for i=1,#t do
+			if ilvl >= t[i] then
 				return unpack(colors[i] or {0.3, 0.3, 0.3})
 			end
 		end
 	end,
 	[4] = function(ilvl)
 		argcheck(ilvl, 2, "number")
-		local _, e = GetAverageItemLevel()
-		local relative = BuildRelative(e)
-		return ColorFunction(relative[12], relative[1], PINK, YELLOW, ilvl)
+		local t = GetRelative()
+		return ColorFunction(t[12], t[1], PINK, YELLOW, ilvl)
 	end,
-	[5] = function(ilvl)
-		argcheck(ilvl, 2, "number")
-		local r, g, b
-		if ilvl <= 450 then
-			r = 0.55
-			g = 0.55
-			b = 0.55
-		elseif ilvl > 450 then
-			ilvl = (ilvl - 450) / 260
-			if ilvl < 0.5 then
-				r = ilvl*2
-				g = 1
-				b = 0
-			else
-
-				r = 1
-				g = 1-(ilvl-0.5)*2
-				b = 0
-			end
-		end
-		return r, g, b
-	end,
-	[6] = function(ilvl)
-		argcheck(ilvl, 2, "number")
-		local r, g, b
-		if ilvl <= 450 then
-			r = 0.55
-			g = 0.55
-			b = 0.55
-		elseif ilvl > 450 then
-			ilvl = (ilvl - 450) / 260
-			if ilvl < .5 then
-				r = 1
-				g = ilvl*2
-				b = 0
-			else
-				r = 1-(ilvl-0.5)*2
-				g = 1
-				b = 0
-			end
-		end
-		return r, g, b
-	end,
-	[7] = function()
+	[5] = function()
 		local color = RAID_CLASS_COLORS[select(2, UnitClass("player"))]
 		return color.r, color.g, color.b
 	end,
-	[8] = function(_, quality)
+	[6] = function(_, quality)
 		if not quality then return 1, 1, 1 end
 		local color = ITEM_QUALITY_COLORS[quality]
 		return color.r, color.g, color.b
@@ -219,3 +185,11 @@ end
 function SyLevel:GetColorFunc()
 	return colorFunctions[SyLevelDB.ColorFunc]
 end
+
+SyLevel:RegisterEvent("PLAYER_AVG_ITEM_LEVEL_UPDATE", function()
+	UpdateRelative()
+
+	if (SyLevelDB) then
+		SyLevel:UpdateAllPipes()
+	end
+end)
