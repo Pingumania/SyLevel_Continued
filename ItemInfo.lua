@@ -40,6 +40,8 @@ local function CachedGetHyperlink(itemLink)
 	local cached = getHyperlinkCache[itemLink]
 	if not cached then
 		local data = C_TooltipInfo.GetHyperlink(itemLink)
+		if not data then return end
+
 		cached = StoreForLink(getHyperlinkCache, itemLink, data.lines)
 	end
 	return cached
