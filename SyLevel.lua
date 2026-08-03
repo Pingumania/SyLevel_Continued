@@ -108,7 +108,7 @@ local function ADDON_LOADED(self, event, addon)
 			SyLevel:SetColorFunc(SyLevelDB.ColorFunc)
 			SyLevel:RegisterAllPipesAndFilters()
 		end
-		self:UnregisterEvent(event)
+		self:UnregisterEvent(event, ADDON_LOADED)
 	end
 end
 
