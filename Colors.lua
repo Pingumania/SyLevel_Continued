@@ -186,10 +186,16 @@ function SyLevel:GetColorFunc()
 	return colorFunctions[SyLevelDB.ColorFunc]
 end
 
-SyLevel:RegisterEvent("PLAYER_AVG_ITEM_LEVEL_UPDATE", function()
+local function Refresh()
 	UpdateRelative()
 
 	if (SyLevelDB) then
 		SyLevel:UpdateAllPipes()
 	end
+end
+
+SyLevel:RegisterEvent("PLAYER_LOGIN", function()
+	C_Timer.After(0, Refresh)
 end)
+
+SyLevel:RegisterEvent("PLAYER_AVG_ITEM_LEVEL_UPDATE", Refresh)
