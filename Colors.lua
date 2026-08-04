@@ -183,6 +183,22 @@ function SyLevel:GetColorFunc()
 	return colorFunctions[SyLevelDB.ColorFunc]
 end
 
+--[[ SyLevel:WithItemLevel(_equipped_, _func_)
+Runs _func_ with the colour scale built from _equipped_ rather than the player's own gear, then puts
+the player's scale back.
+--]]
+function SyLevel:WithItemLevel(equipped, func)
+	argcheck(equipped, 2, "number")
+	argcheck(func, 3, "function")
+
+	local saved = relative
+	relative = BuildRelative(equipped)
+
+	func()
+
+	relative = saved
+end
+
 local function Refresh()
 	UpdateRelative()
 

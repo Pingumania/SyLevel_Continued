@@ -252,7 +252,9 @@ local function CreateFontSection(title, dbKey)
 			previewText:SetTextColor(1, 1, 1, 1)
 			previewText:SetText(PREVIEW_BIND)
 		else
-			previewText:SetTextColor(SyLevel:GetColorFunc()(PREVIEW_ILEVEL, PREVIEW_QUALITY))
+			SyLevel:WithItemLevel(PREVIEW_ILEVEL, function()
+				previewText:SetTextColor(SyLevel:GetColorFunc()(PREVIEW_ILEVEL, PREVIEW_QUALITY))
+			end)
 			previewText:SetText(PREVIEW_ILEVEL)
 		end
 	end
@@ -401,19 +403,15 @@ local COLOR_SAMPLE_QUALITIES = {
 	Enum.ItemQuality.Heirloom,
 }
 
+local COLOR_SAMPLE_REFERENCE = 500
 local COLOR_SAMPLE_LOW = 0.88
 local COLOR_SAMPLE_HIGH = 1.1
 
 local colorSamples = {}
 
 local function SampleItemLevel(index, count)
-	local _, equipped = GetAverageItemLevel()
-	if not equipped or equipped <= 0 then
-		equipped = SyLevel.MAX_ITEM_LEVEL
-	end
-
-	local low = equipped * COLOR_SAMPLE_LOW
-	local high = equipped * COLOR_SAMPLE_HIGH
+	local low = COLOR_SAMPLE_REFERENCE * COLOR_SAMPLE_LOW
+	local high = COLOR_SAMPLE_REFERENCE * COLOR_SAMPLE_HIGH
 
 	return floor(low + (high - low) * ((index - 1) / (count - 1)) + 0.5)
 end
@@ -425,12 +423,14 @@ local function RefreshColorPreview()
 	local ColorFunc = SyLevel:GetColorFunc()
 	local count = #colorSamples
 
-	for index, text in ipairs(colorSamples) do
-		local ilevel = SampleItemLevel(index, count)
-		text:SetFont(SyLevel.media:Fetch("font", typeface), size, flags)
-		text:SetTextColor(ColorFunc(ilevel, COLOR_SAMPLE_QUALITIES[index]))
-		text:SetText(ilevel)
-	end
+	SyLevel:WithItemLevel(COLOR_SAMPLE_REFERENCE, function()
+		for index, text in ipairs(colorSamples) do
+			local ilevel = SampleItemLevel(index, count)
+			text:SetFont(SyLevel.media:Fetch("font", typeface), size, flags)
+			text:SetTextColor(ColorFunc(ilevel, COLOR_SAMPLE_QUALITIES[index]))
+			text:SetText(ilevel)
+		end
+	end)
 end
 
 local function CreateColorPreview(row)
