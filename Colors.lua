@@ -60,9 +60,6 @@ local relative
 
 local function UpdateRelative()
 	local _, equipped = GetAverageItemLevel()
-	if (not equipped or equipped <= 0) then
-		equipped = MAX_ITEM_LEVEL
-	end
 
 	relative = BuildRelative(equipped)
 	return relative
