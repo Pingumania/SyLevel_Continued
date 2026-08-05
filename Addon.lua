@@ -1,6 +1,6 @@
-local addon, ns = ...
+local ADDON_NAME, ns = ...
 ns.SyLevel = {}
-ns.Name = addon
+ns.Name = ADDON_NAME
 ns.TrivName = "SyLevel Continued"
 ns.Classic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 ns.Retail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE

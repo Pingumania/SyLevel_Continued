@@ -13,7 +13,7 @@ Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
 Libs\LibSharedMedia-3.0\LibSharedMedia-3.0.lua
 Libs\Huddle\Embed.xml
 
-Init.lua
+Addon.lua
 Media.lua
 Event.lua
 Pipe.lua
@@ -21,7 +21,7 @@ Filter.lua
 Display.lua
 Colors.lua
 Fonts.lua
-SyLevel.lua
+Pipeline.lua
 ItemInfo.lua
 Pipes\Load_Pipes.xml
 Displays\Load_Displays.xml
