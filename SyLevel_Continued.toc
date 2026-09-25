@@ -1,4 +1,4 @@
-## Interface: 120007
+## Interface: 16001, 120100
 
 ## Title: SyLevel Continued
 ## Notes: Displays item level information on your item slots!
