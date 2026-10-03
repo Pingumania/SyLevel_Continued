@@ -3,6 +3,7 @@
 ## Title: SyLevel Continued
 ## Notes: Displays item level information on your item slots!
 ## Category: Equipment
+## IconAtlas: plunderstorm-icon-upgrade
 ## Author: Pingumania
 ## Version: @project-version@
 
