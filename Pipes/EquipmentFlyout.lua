@@ -1,25 +1,24 @@
 local hook
 local _E
 
-local function GetIL(loc)
-	local Player, bank, bags, _, slot, bag = EquipmentManager_UnpackLocation(loc)
-	if (not Player and not bank and not bags) then return end
-	if (not bags) then
-		return GetInventoryItemLink("player", slot)
-	else
-		return C_Container.GetContainerItemLink(bag, slot)
+local function GetLocation(loc)
+	local data = EquipmentManager_GetLocationData(loc)
+	if data.isBags then
+		return data.bag, data.slot
+	elseif data.isPlayer or data.isBank then
+		return data.slot
 	end
 end
 
 local function Pipe(self)
 	if not CharacterFrame:IsShown() then return end
 	local location = self.location
-	local itemLink
+	local id, slot
 	if (location and location < EQUIPMENTFLYOUT_FIRST_SPECIAL_LOCATION) then
-		itemLink = GetIL(location)
+		id, slot = GetLocation(location)
 	end
 
-	return SyLevel:CallFilters("char-flyout", self, _E and itemLink)
+	return SyLevel:CallFilters("char-flyout", self, _E and id, slot)
 end
 
 local function Update(self)
